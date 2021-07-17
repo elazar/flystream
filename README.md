@@ -19,7 +19,7 @@ Released under the [MIT License](https://en.wikipedia.org/wiki/MIT_License).
 
 * Using Flysystem with another library that interacts with the filesystem using PHP filesystem functions instead of Flysystem.
 * Intercepting filesystem operations for verification in tests.
-* Improving the speed of tests where the code under test would normally require access to the local filesystem.
+* Improving the speed of tests where the code under test would otherwise require access to the local filesystem.
 
 ## Unsupported Use Cases
 
@@ -27,7 +27,7 @@ Released under the [MIT License](https://en.wikipedia.org/wiki/MIT_License).
 
 ## Known Issues
 
-* If a file or directory handle is not explicitly closed after use (i.e. using [`fclose()`](https://www.php.net/fclose) or [`closedir()`](https://www.php.net/closedir) as appropriate), PHP will implicitly attempt to close it during [shutdown](https://www.php.net/manual/en/function.register-shutdown-function.php). This situation may trigger a segmentation fault in some environments. This issue is [currently under investigation](https://github.com/elazar/xdebug-date-stream-php-segfault). In the interim, the easiest work-around is to ensure that file and directory handles are explicitly closed.
+* If a file or directory handle is not explicitly closed after use (i.e. using [`fclose()`](https://www.php.net/fclose) or [`closedir()`](https://www.php.net/closedir) as appropriate), PHP will implicitly attempt to close it during [shutdown](https://www.php.net/manual/en/function.register-shutdown-function.php). This situation may trigger a segmentation fault in some environments. This issue is [under investigation](https://github.com/elazar/xdebug-date-stream-php-segfault). In the interim, the easiest work-around is to ensure that file and directory handles are explicitly closed.
 
 ## Requirements
 
@@ -121,18 +121,18 @@ $registry->unregister('mem');
 
 ## Configuration
 
-For its most basic use, Flystream only requires two parameters:
+For its most basic use, Flystream requires two parameters:
 
 1. a string containing a name for a custom protocol used by PHP filesystem functions; and
 2. an object that implements the Flysystem `FilesystemOperator` interface (e.g. an instance of the `Filesystem` class).
 
 ### Path Normalization
 
-The Flysystem `Filesystem` class supports normalization of supplied paths before they're passed to the underlying adapter. This normalizer process is represented by the Flysystem `PathNormalizer` interface.
+The Flysystem `Filesystem` class supports normalization of supplied paths before they're passed to the underlying adapter. The Flysystem `PathNormalizer` interface represents this normalization process.
 
-The implementation of this interface that Flysystem normally uses by default is `WhitespacePathNormalizer`, which handles normalizing the directory separator (i.e. converting `\` to `/`), removes abnormal whitespace characters, and resolves relative paths.
+The implementation of this interface that Flysystem uses by default is `WhitespacePathNormalizer`, which handles normalizing the directory separator (i.e. converting `\` to `/`), removes abnormal whitespace characters, and resolves relative paths.
 
-If you're using a third-party adapter, it's likely that you'll need path normalization to include removing the custom protocol used to register the Flysystem filesystem with Flystream. As such, by default, Flystream registers a custom path normalizer that it defines, `StripProtocolPathNormalizer`.
+If you're using a third-party adapter, you'll probably need path normalization to include removing the custom protocol used to register the Flysystem filesystem with Flystream. As such, by default, Flystream registers a custom path normalizer that it defines, `StripProtocolPathNormalizer`.
 
 If you would rather leave custom protocols intact in paths, you can override the path normalizer that Flystream uses a different one instead, such as Flysystem's default.
 
@@ -146,7 +146,7 @@ use League\Flysystem\WhitespacePathNormalizer;
 ServiceLocator::set(PathNormalizer::class, WhitespacePathNormalizer::class);
 ```
 
-If you would prefer that `StripProtocolPathNormalizer` only remove some protocols, you can limit those that it removes by specifying a custom instance that sets a value for its first parameter.
+If you would prefer to limit protocols removed by `StripProtocolPathNormalizer` to a specified list, you can do so by specifying a custom instance that sets a value for its first parameter.
 
 ```php
 <?php
@@ -156,7 +156,7 @@ use Elazar\Flystream\StripProtocolPathNormalizer;
 // To remove a single protocol, specify it as a string
 $pathNormalizer = new StripProtocolPathNormalizer('foo');
 
-// To remove multiple protocols, specify them as an array of strings
+// To remove more than one protocol, specify them as an array of strings
 $pathNormalizer = new StripProtocolPathNormalizer(['foo', 'bar']);
 
 ServiceLocator::set(PathNormalizer::class, $pathNormalizer);
@@ -174,7 +174,7 @@ use League\Flysystem\PathNormalizer;
 
 ServiceLocator::set(PathNormalizer::class, new StripProtocolPathNormalizer(
 
-    // This is the default and results in all protocols being removed
+    // This is the default and results in the removal of all protocols
     null, 
 
     // This normalizer returns the given path unchanged
@@ -183,7 +183,7 @@ ServiceLocator::set(PathNormalizer::class, new StripProtocolPathNormalizer(
 ));
 ```
 
-If you'd rather that no path normalization be applied, you can use `PassThruPathNormalizer` directly to do this.
+If you'd rather not apply any path normalization, you can use `PassThruPathNormalizer` directly to do this.
 
 ```php
 <?php
@@ -235,7 +235,7 @@ ServiceLocator::set(VisibilityConverter::class, new CustomVisibilityConverter(
 
 By default, the Flysystem [Local adapter](https://flysystem.thephpleague.com/v1/docs/adapter/local/) uses [file locks](https://flysystem.thephpleague.com/v1/docs/adapter/local/#locks) during writes and updates, but allows overriding this behavior.
 
-Flystream follows suit. It defines an interface, `LockRegistryInterface`, and two implementations of this interface, `LocalLockRegistry` and `PermissiveLockRegistry`. By default, Flystream uses the former, which is a naïve implementation that only prevents the current PHP process from reading a file already open for writing or writing to a file already open for reading.
+Flystream follows suit. It defines an interface, `LockRegistryInterface`, and two implementations of this interface, `LocalLockRegistry` and `PermissiveLockRegistry`. By default, Flystream uses the former, which is a naïve implementation that prevents the current PHP process from reading a file already open for writing or writing to a file already open for reading.
 
 If you'd rather disable locking entirely, you can configure Flystream to use the latter implementation, which grants all requested lock acquisitions and releases.
 
@@ -252,7 +252,7 @@ ServiceLocator::set(
 );
 ```
 
-Alternatively, you can create your own lock registry implementation, such as a distributed one that handles locking between multiple PHP processes using a library such as [`php-lock/lock`](https://github.com/php-lock/lock).
+Another option is to create your own lock registry implementation, such as a distributed one that handles locking between PHP processes using a library such as [`php-lock/lock`](https://github.com/php-lock/lock).
 
 ```php
 <?php
@@ -322,9 +322,9 @@ ServiceLocator::set(LoggerInterface::class, $logger);
 
 ### Service Locator
 
-Flystream uses a [singleton](https://en.wikipedia.org/wiki/Singleton_pattern) [service locator](https://en.wikipedia.org/wiki/Service_locator_pattern) rather than a more commonly accepted [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) configuration due to how PHP uses its stream wrapper classes. Specifically, PHP implicitly creates an instance of the stream wrapper class each time the associated custom protocol is used and doesn't allow an opportunity for dependency injection.
+Flystream uses a [singleton](https://en.wikipedia.org/wiki/Singleton_pattern) [service locator](https://en.wikipedia.org/wiki/Service_locator_pattern) rather than a more commonly accepted [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) configuration due to how PHP uses its stream wrapper classes. Specifically, PHP implicitly creates an instance of the stream wrapper class each time you use the associated custom protocol, and doesn't allow for dependency injection.
 
-This requires use of a service locator for the stream wrapper to have access to dependencies, a singleton in particular so that the stream wrapper uses the same container that the end user configures to override default dependency implementations. Use of the service locator is limited to a single method in the stream wrapper class that fetches a dependency from the container of the singeton instance. It also supports injecting a custom singleton instance, particularly for testing. These measures limit the impact of the disadvantages of using the service locator pattern.
+This requires use of a service locator for the stream wrapper to have access to dependencies, a singleton in particular so that the stream wrapper uses the same container that the end user configures to override default dependency implementations. The stream wrapper class limits its use of the service locator to a single method that fetches a dependency from the container of the singeton instance. It also supports injecting a custom singleton instance, in particular for testing. These measures limit the impact of the disadvantages of using the service locator pattern.
 
 ### Buffering
 
