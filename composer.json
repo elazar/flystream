@@ -1,0 +1,37 @@
+{
+    "name": "elazar/flystream",
+    "description": "PHP stream wrapper for Flysystem",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matthew Turland",
+            "email": "me@matthewturland.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "league/flysystem": "^2.1",
+        "pimple/pimple": "^3.4",
+        "psr/log": "^1"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "league/flysystem-memory": "^2.0",
+        "mockery/mockery": "^1.4",
+        "monolog/monolog": "^2.3",
+        "pestphp/pest": "^1.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "Elazar\\Flystream\\": "src/"
+        }
+    },
+    "scripts": {
+        "cs": "php-cs-fixer fix",
+        "test": "XDEBUG_MODE=coverage pest --coverage"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
