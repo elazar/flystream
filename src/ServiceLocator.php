@@ -64,6 +64,18 @@ class ServiceLocator implements ServiceProviderInterface
 
         $c[LoggerInterface::class] =
             fn () => $c[NullLogger::class];
+
+        $c[BufferInterface::class] =
+            fn () => $c[MemoryBuffer::class];
+
+        $c[OverflowBuffer::class] =
+            fn () => new OverflowBuffer();
+
+        $c[FileBuffer::class] =
+            fn () => new FileBuffer();
+
+        $c[MemoryBuffer::class] =
+            fn () => new MemoryBuffer();
     }
 
     public function getContainer(): Container

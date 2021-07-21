@@ -195,6 +195,48 @@ use League\Flysystem\PathNormalizer;
 ServiceLocator::set(PathNormalizer::class, PassThruPathNormalizer::class);
 ```
 
+### Buffering
+
+Flysystem [doesn't support append operations](https://flysystem.thephpleague.com/v2/docs/what-is-new/#no-more-update-updatestream-put-and-putstream), in part because some of its drivers don't (e.g. AWS S3).
+
+The default size of the PHP stream write buffer [differs between PHP 7.4 and 8.0](https://3v4l.org/RiENn), which may result in more than one write operation if the size of the data written exceeds the buffer size.
+
+Because of these circumstances, Flystream buffers written data and then writes or "flushes" it out to the destination.
+
+Flystream offers native support for these buffer strategies:
+
+* **Memory**: Buffers strictly in memory. This has the best performance, but also the highest memory usage.
+* **File**: Buffers strictly in a temporary file. This has the worst performance, but also the least memory usage.
+* **Overflow**: Buffers in memory up to a configurable limit, then switches to using a temporary file. Its performance and memory usage generally lies between the two strategies above.
+
+By default, Flystream uses the Memory strategy for optimal performance. Below are examples of overriding this setting to use a different strategy.
+
+```php
+<?php
+
+use Elazar\Flystream\ServiceLocator;
+use Elazar\Flystream\BufferInterface;
+
+// To use the File strategy:
+use Elazar\Flystream\FileBuffer;
+ServiceLocator::set(BufferInterface::class, FileBuffer::class);
+
+// To use the Overflow configuration with a default memory cap of 2 MB:
+use Elazar\Flystream\OverflowBuffer;
+ServiceLocator::set(BufferInterface::class, OverflowBuffer::class);
+
+// To use the Overflow configuration with a custom memory cap:
+// @var int Memory limit in bytes (2 MB in this example)
+$maxMemory = 2 * 1024**2;
+$buffer = new OverflowBuffer;
+$buffer->setMaxMemory($maxMemory);
+ServiceLocator::set(BufferInterface::class, $buffer);
+```
+
+You may want to check the value of your [`memory_limit`](https://www.php.net/manual/en/ini.core.php#ini.memory-limit) PHP INI setting and use either a [profiler](http://xdebug.org/docs/profiler) or functions like [`memory_get_usage()`](https://www.php.net/memory_get_usage) and [`memory_get_peak_usage()`](https://www.php.net/memory_get_peak_usage) to get an idea of which strategy is best for your use case.
+
+Another option is using your own buffer strategy implementation, by creating a class that implements `BufferInterface` and then configuring Flystream to use it in the same fashion as the above examples.
+
 ### Visibility
 
 Flysystem implements an abstraction layer for [visibility](https://flysystem.thephpleague.com/v2/docs/usage/unix-visibility/) and an implementation for handling [Unix-style visibility](https://flysystem.thephpleague.com/v2/docs/usage/unix-visibility/).
@@ -325,7 +367,3 @@ ServiceLocator::set(LoggerInterface::class, $logger);
 Flystream uses a [singleton](https://en.wikipedia.org/wiki/Singleton_pattern) [service locator](https://en.wikipedia.org/wiki/Service_locator_pattern) rather than a more commonly accepted [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) configuration due to how PHP uses its stream wrapper classes. Specifically, PHP implicitly creates an instance of the stream wrapper class each time you use the associated custom protocol, and doesn't allow for dependency injection.
 
 This requires use of a service locator for the stream wrapper to have access to dependencies, a singleton in particular so that the stream wrapper uses the same container that the end user configures to override default dependency implementations. The stream wrapper class limits its use of the service locator to a single method that fetches a dependency from the container of the singeton instance. It also supports injecting a custom singleton instance, in particular for testing. These measures limit the impact of the disadvantages of using the service locator pattern.
-
-### Buffering
-
-Flysystem doesn't support appending data to existing files, at least in part because some adapters don't support this (e.g. AWS S3). Because of this, Flystream must buffer the data supplied in all write operations into memory until a flush operation (e.g. instigated by closing the file receiving the writes) occurs. As such, it may not be an optimal solution when writing a large amount of data to a single file.

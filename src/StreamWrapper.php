@@ -29,10 +29,7 @@ class StreamWrapper
      */
     private $read = null;
 
-    /**
-     * @var resource|null
-     */
-    private $write = null;
+    private ?BufferInterface $buffer = null;
 
     /** @var resource */
     public $context;
@@ -161,9 +158,9 @@ class StreamWrapper
             fclose($this->read);
             $this->read = null;
         }
-        if ($this->write !== null) {
-            fclose($this->write);
-            $this->write = null;
+        if ($this->buffer !== null) {
+            $this->buffer->close();
+            $this->buffer = null;
         }
     }
 
@@ -177,11 +174,9 @@ class StreamWrapper
     {
         $this->log('info', __METHOD__);
         try {
-            fseek($this->write, 0);
-            $filesystem = $this->getFilesystem($this->path);
-            $filesystem->writeStream(
+            $this->buffer->flush(
+                $this->getFilesystem($this->path),
                 $this->path,
-                $this->write,
                 $this->getConfig($this->path)
             );
         } catch (Throwable $e) {
@@ -331,21 +326,10 @@ class StreamWrapper
                     'Stream mode is "r" which does not allow writing'
                 );
             }
-            // Flysystem doesn't support append operations, at least in part
-            // because at least some of its drivers don't (e.g. AWS S3).
-            //
-            // The default size of the PHP stream write buffer differs between
-            // PHP 7.4 and 8.0; see https://3v4l.org/RiENn. As such, one or
-            // more calls may be made to stream_write() if the size of the data
-            // to be written exceeds the buffer size.
-            //
-            // Because of these circumstances, written data must be buffered
-            // and then written out to the destination when stream_flush() is
-            // called.
-            if ($this->write === null) {
-                $this->write = fopen('php://temp', 'w+');
+            if ($this->buffer === null) {
+                $this->buffer = $this->get(BufferInterface::class);
             }
-            return fwrite($this->write, $data);
+            return $this->buffer->write($data);
         } catch (Throwable $e) {
             $this->log('error', __METHOD__, func_get_args() + [
                 'exception' => $e,

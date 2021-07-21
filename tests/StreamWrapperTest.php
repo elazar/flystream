@@ -21,11 +21,16 @@ function dumpLogs()
 }
 
 beforeEach(function () {
+    $serviceLocator = new ServiceLocator;
+    ServiceLocator::setInstance($serviceLocator);
+    $container = $serviceLocator->getContainer();
+
     $this->logger = new Logger(__FILE__);
     $this->logger->pushHandler(new TestHandler());
-    $container = ServiceLocator::getInstance()->getContainer();
     $container[LoggerInterface::class] = $this->logger;
+
     $this->registry = $container[FilesystemRegistry::class];
+
     $this->filesystem = new Filesystem(new InMemoryFilesystemAdapter());
     $this->registry->register('fly', $this->filesystem);
 });
