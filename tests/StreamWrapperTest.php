@@ -5,6 +5,7 @@ use Elazar\Flystream\ServiceLocator;
 use League\Flysystem\FileAttributes;
 use League\Flysystem\Filesystem;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
+use League\Flysystem\PathNormalizer;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -257,4 +258,22 @@ it('supports stream selection', function () {
     );
     expect($result)->toBe(1);
     fclose($stream);
+});
+
+it('can read and write to a Flysystem filesystem', function () {
+    $this->filesystem = new Filesystem(
+        new InMemoryFilesystemAdapter(),
+        [],
+        ServiceLocator::get(PathNormalizer::class),
+    );
+    $this->registry->register('mem', $this->filesystem);
+
+    $path = 'foo';
+    $expected = 'bar';
+    $this->filesystem->write($path, $expected);
+
+    $actual = file_get_contents("mem://$path");
+    $this->registry->unregister('mem');
+
+    expect($actual)->toBe($expected);
 });
