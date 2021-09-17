@@ -56,7 +56,7 @@ The examples below aren't comprehensive, but should provide a basic understandin
 use League\Flysystem\Filesystem;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 
-$adapter = new InMemoryFilesystemAdapter();
+$adapter = new InMemoryFilesystemAdapter;
 $filesystem = new Filesystem($adapter);
 
 /**
@@ -130,7 +130,7 @@ For its most basic use, Flystream requires two parameters:
 
 The Flysystem `Filesystem` class supports normalization of supplied paths before they're passed to the underlying adapter. The Flysystem `PathNormalizer` interface represents this normalization process.
 
-The implementation of this interface that Flysystem uses by default is `WhitespacePathNormalizer`, which handles normalizing the directory separator (i.e. converting `\` to `/`), removes abnormal whitespace characters, and resolves relative paths.
+The implementation of this interface that Flysystem uses by default is `WhitespacePathNormalizer`, which handles normalizing the directory separator (i.e. converting `\` to `/`), removing abnormal whitespace characters, and resolving relative paths.
 
 If you're using a third-party adapter, you'll probably need path normalization to include removing the custom protocol used to register the Flysystem filesystem with Flystream. As such, by default, Flystream registers a custom path normalizer that it defines, `StripProtocolPathNormalizer`. You can configure your `Filesystem` instance to use this normalizer like so.
 
@@ -143,7 +143,7 @@ use League\Flysystem\PathNormalizer;
 
 // $adapter = ...
 // $config = ...
-$normalizer = ServiceLocator::set(PathNormalizer::class);
+$normalizer = ServiceLocator::get(PathNormalizer::class);
 $filesystem = new Filesystem($adapter, $config, $normalizer);
 ```
 
@@ -169,9 +169,9 @@ ServiceLocator::set(PathNormalizer::class, $pathNormalizer);
 <?php
 
 use Elazar\Flystream\PassThruPathNormalizer;
+use League\Flysystem\PathNormalizer;
 use Elazar\Flystream\ServiceLocator;
 use Elazar\Flystream\StripProtocolPathNormalizer;
-use League\Flysystem\PathNormalizer;
 
 ServiceLocator::set(PathNormalizer::class, new StripProtocolPathNormalizer(
 
@@ -179,12 +179,22 @@ ServiceLocator::set(PathNormalizer::class, new StripProtocolPathNormalizer(
     null, 
 
     // This normalizer returns the given path unchanged
-    new PassThruPathNormalizer()
+    new PassThruPathNormalizer
 
 ));
 ```
 
 If you'd rather not apply any path normalization, you can use the `PassThruPathNormalizer` normalizer class provided by Flystream to do this.
+
+```php
+<?php
+
+use Elazar\Flystream\PassThruPathNormalizer;
+use League\Flysystem\PathNormalizer;
+use Elazar\Flystream\ServiceLocator;
+
+ServiceLocator::set(PathNormalizer::class, new PassThruPathNormalizer);
+```
 
 ### Buffering
 
@@ -205,8 +215,8 @@ By default, Flystream uses the Memory strategy for optimal performance. Below ar
 ```php
 <?php
 
-use Elazar\Flystream\ServiceLocator;
 use Elazar\Flystream\BufferInterface;
+use Elazar\Flystream\ServiceLocator;
 
 // To use the File strategy:
 use Elazar\Flystream\FileBuffer;
