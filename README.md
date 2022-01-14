@@ -6,14 +6,11 @@
 [![Buy Me a Cofee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-blue.svg)](https://www.buymeacoffee.com/DIkm1qe)
 [![Patreon](https://img.shields.io/badge/patreon-donate-blue.svg)](https://patreon.com/matthewturland)
 
-[Flysystem v2](https://flysystem.thephpleague.com/v2/docs/) + [PHP stream wrappers](https://www.php.net/manual/en/class.streamwrapper.php) = 🔥
-
+[Flysystem v2/3](https://flysystem.thephpleague.com/v2/docs/) + [PHP stream wrappers](https://www.php.net/manual/en/class.streamwrapper.php) = 🔥
 
 Flystream enables you to use core PHP filesystem functions to interact with Flysystem filesystems by registering them as custom protocols.
 
 Released under the [MIT License](https://en.wikipedia.org/wiki/MIT_License).
-
-**WARNING: This project is in an alpha state of development and may be subject to changes that break backward compatibility. It may contain bugs, lack features or extension points, or be otherwise unsuitable for production use. User discretion is advised.**
 
 ## Supported Use Cases
 
@@ -32,7 +29,7 @@ Released under the [MIT License](https://en.wikipedia.org/wiki/MIT_License).
 ## Requirements
 
 * PHP 7.4+
-* Flysystem v2
+* Flysystem 2 or 3
 
 ## Installation
 
