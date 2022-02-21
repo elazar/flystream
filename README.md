@@ -366,6 +366,24 @@ $logger = new Logger;
 ServiceLocator::set(LoggerInterface::class, $logger);
 ```
 
+[Core buffer implementations](#buffering) do not implement logging. However, as of Flystream 0.4.0, a buffer instance can be wrapped in an instance of the `LoggingCompositeBuffer` class to log calls to its methods. An example of doing this with the default `MemoryBuffer` buffer implementation is shown below.
+
+```php
+<?php
+
+use Elazar\Flystream\BufferInterface;
+use Elazar\Flystream\LoggingCompositeBuffer;
+use Elazar\Flystream\MemoryBuffer;
+use Elazar\Flystream\ServiceLocator;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
+
+$logger = new Logger;
+// configure $logger here
+$buffer = new LoggingCompositeBuffer(new MemoryBuffer, $logger);
+ServiceLocator::set(BufferInterface::class, $buffer);
+```
+
 ## Design
 
 ### Service Locator
