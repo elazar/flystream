@@ -43,7 +43,13 @@ composer require elazar/flystream
 
 ## Usage
 
-The examples below aren't comprehensive, but should provide a basic understanding of the capabilities of Flystream.
+If you want to run the examples below, you will need to install [`league/flysystem-memory`](https://packagist.org/packages/league/flysystem-memory).
+
+```sh
+composer require league/flysystem-memory
+```
+
+These examples below aren't comprehensive, but should provide a basic understanding of the capabilities of Flystream.
 
 ```php
 <?php
