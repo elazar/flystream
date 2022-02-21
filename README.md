@@ -39,9 +39,17 @@ Use [Composer](https://getcomposer.org/).
 composer require elazar/flystream
 ```
 
+**Note**: This will automatically install the latest version of the Flysystem core library that is available for your environment. However, you must handle installing adapters yourself. See [the Flysystem documentation](https://flysystem.thephpleague.com/docs/) for a list of official adapters.
+
 ## Usage
 
-The examples below aren't comprehensive, but should provide a basic understanding of the capabilities of Flystream.
+If you want to run the examples below, you will need to install [`league/flysystem-memory`](https://packagist.org/packages/league/flysystem-memory).
+
+```sh
+composer require league/flysystem-memory
+```
+
+These examples below aren't comprehensive, but should provide a basic understanding of the capabilities of Flystream.
 
 ```php
 <?php
