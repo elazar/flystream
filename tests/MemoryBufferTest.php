@@ -26,3 +26,14 @@ it('handles multiple writes', function () {
     $actual = $this->filesystem->read('/foo');
     expect($actual)->toBe('foobar');
 });
+
+it('handles consecutive writes to the same file', function () {
+    $this->buffer->write('foo');
+    $this->buffer->flush($this->filesystem, '/foo', []);
+    $this->buffer->close();
+    $this->buffer->write('bar');
+    $this->buffer->flush($this->filesystem, '/foo', []);
+    $this->buffer->close();
+    $actual = $this->filesystem->read('/foo');
+    expect($actual)->toBe('bar');
+});

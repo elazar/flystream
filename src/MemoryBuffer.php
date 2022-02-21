@@ -38,6 +38,7 @@ class MemoryBuffer implements BufferInterface
     {
         if ($this->stream) {
             fclose($this->stream);
+            $this->stream = null;
         }
     }
 }
