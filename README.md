@@ -89,7 +89,7 @@ file_put_contents('mem://foo/bar', 'bay');
 
 $contents = file_get_contents('mem://foo/bar');
 // or
-$contents = stream_get_contents('mem://foo/bar');
+$contents = stream_get_contents(fopen('mem://foo/bar', 'r'));
 
 if (file_exists('mem://foo/bar')) {
     rename('mem://foo/bar', 'mem://foo/baz');
