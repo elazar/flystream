@@ -1,7 +1,7 @@
 # Flystream
 
 [![PHP Version Support](https://img.shields.io/static/v1?label=php&message=%3E=%207.4.0&color=blue)](https://packagist.org/packages/elazar/flystream)
-[![Packagist Version](https://img.shields.io/static/v1?label=packagist&message=0.2.0&color=blue)](https://packagist.org/packages/elazar/flystream)
+[![Packagist Version](https://img.shields.io/static/v1?label=packagist&message=0.4.0&color=blue)](https://packagist.org/packages/elazar/flystream)
 [![Software License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
 [![Buy Me a Cofee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-blue.svg)](https://www.buymeacoffee.com/DIkm1qe)
 [![Patreon](https://img.shields.io/badge/patreon-donate-blue.svg)](https://patreon.com/matthewturland)
