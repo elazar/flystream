@@ -22,7 +22,7 @@ function dumpLogs()
 }
 
 beforeEach(function () {
-    $serviceLocator = new ServiceLocator;
+    $serviceLocator = new ServiceLocator();
     ServiceLocator::setInstance($serviceLocator);
     $container = $serviceLocator->getContainer();
 

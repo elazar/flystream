@@ -12,10 +12,11 @@ beforeEach(function () {
     $this->logger = new Logger(__FILE__);
     $this->logger->pushHandler(new TestHandler());
 
-    $this->nestedBuffer = new class implements BufferInterface {
+    $this->nestedBuffer = new class () implements BufferInterface {
         public bool $flushCalled = false;
         public bool $closeCalled = false;
-        public function write(string $data) {
+        public function write(string $data)
+        {
             return strlen($data);
         }
         public function flush(
@@ -25,7 +26,8 @@ beforeEach(function () {
         ): void {
             $this->flushCalled = true;
         }
-        public function close(): void {
+        public function close(): void
+        {
             $this->closeCalled = true;
         }
     };
