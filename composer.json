@@ -18,7 +18,6 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
         "league/flysystem-memory": "^2.0 || ^3.0",
-        "mockery/mockery": "^1.4",
         "monolog/monolog": "^2.3",
         "pestphp/pest": "^1.9"
     },
