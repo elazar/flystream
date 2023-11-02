@@ -7,6 +7,7 @@ use League\Flysystem\FilesystemOperator;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
+use Monolog\LogRecord;
 
 beforeEach(function () {
     $this->logger = new Logger(__FILE__);
@@ -46,8 +47,7 @@ it('logs writes', function () {
         ->toHaveCount(2)
         ->toHaveKeys([0, 1])
         ->each
-        ->toBeArray()
-        ->toHaveKeys(['message', 'context', 'level_name']);
+        ->toBeInstanceOf(LogRecord::class);
 
     expect($records[0]['message'])->toBe('Elazar\Flystream\LoggingCompositeBuffer::write');
     expect($records[0]['context'])
@@ -84,8 +84,7 @@ it('logs flushes', function () {
         ->toHaveCount(2)
         ->toHaveKeys([0, 1])
         ->each
-        ->toBeArray()
-        ->toHaveKeys(['message', 'context', 'level_name']);
+        ->toBeInstanceOf(LogRecord::class);
 
     expect($records[0]['message'])->toBe('Elazar\Flystream\LoggingCompositeBuffer::flush');
     expect($records[0]['context'])
@@ -121,8 +120,7 @@ it('logs closes', function () {
         ->toHaveCount(2)
         ->toHaveKeys([0, 1])
         ->each
-        ->toBeArray()
-        ->toHaveKeys(['message', 'context', 'level_name']);
+        ->toBeInstanceOf(LogRecord::class);
 
     expect($records[0]['message'])->toBe('Elazar\Flystream\LoggingCompositeBuffer::close');
     expect($records[0]['context'])
