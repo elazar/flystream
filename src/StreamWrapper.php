@@ -414,7 +414,7 @@ class StreamWrapper
 
     private function get(string $key)
     {
-        return ServiceLocator::getInstance()->getContainer()[$key];
+        return ServiceLocator::get($key);
     }
 
     private function getDir(string $path): Iterator

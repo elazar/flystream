@@ -10,29 +10,17 @@ use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
-function dumpLogs()
-{
-    $container = ServiceLocator::getInstance()->getContainer();
-    echo implode('', array_map(
-        fn (array $record): string => $record['formatted'] . PHP_EOL,
-        $container[LoggerInterface::class]
-            ->popHandler()
-            ->getRecords()
-    ));
-}
-
 beforeEach(function () {
     $serviceLocator = new ServiceLocator();
     ServiceLocator::setInstance($serviceLocator);
-    $container = $serviceLocator->getContainer();
 
     $this->logger = new Logger(__FILE__);
-    $this->logger->pushHandler(new TestHandler());
-    $container[LoggerInterface::class] = $this->logger;
+    $this->logger->pushHandler(new TestHandler);
+    ServiceLocator::set(LoggerInterface::class, $this->logger);
 
-    $this->registry = $container[FilesystemRegistry::class];
+    $this->registry = ServiceLocator::get(FilesystemRegistry::class);
 
-    $this->filesystem = new Filesystem(new InMemoryFilesystemAdapter());
+    $this->filesystem = new Filesystem(new InMemoryFilesystemAdapter);
     $this->registry->register('fly', $this->filesystem);
 });
 
