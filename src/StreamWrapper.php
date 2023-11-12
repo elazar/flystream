@@ -256,6 +256,10 @@ class StreamWrapper
         $this->log('info', __METHOD__, func_get_args());
         $this->path = $path;
         $this->mode = $mode;
+        if (strpbrk($mode, 'waxc') !== false) {
+            $this->stream_write('');
+            $this->stream_flush();
+        }
         return true;
     }
 
