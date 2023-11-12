@@ -10,5 +10,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: php-actions/composer@v6
     - name: Run tests
-      run: vendor/bin/pest
+      run: |
+        chmod +w vendor/pestphp/pest/.temp
+        vendor/bin/pest
 
