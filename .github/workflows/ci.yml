@@ -11,6 +11,6 @@ jobs:
     - uses: php-actions/composer@v6
     - name: Run tests
       run: |
-        sudo chmod +w vendor/pestphp/pest/.temp
+        sudo chmod -R 777 vendor/pestphp/pest/.temp
         vendor/bin/pest
 
