@@ -34,6 +34,20 @@ it('can create and delete directories', function () {
     rmdir('fly://foo');
 });
 
+it('can copy an empty file', function () {
+    $success = touch('fly://src');
+    expect($success)->toBe(true);
+
+    $success = copy('fly://src', 'fly://dst');
+    expect($success)->toBe(true);
+
+    $success = file_exists('fly://dst');
+    expect($success)->toBe(true);
+
+    $contents = file_get_contents('fly://dst');
+    expect($contents)->toBe('');
+});
+
 it('handles opening a nonexistent directory', function () {
     $dir = opendir('fly://foo');
     expect($dir)->toBeResource();
