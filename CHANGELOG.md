@@ -2,7 +2,7 @@
 
 ## [1.0.0](https://github.com/elazar/flystream/releases/tag/1.0.0)
 
-2023-11-18
+2024-01-06
 
 * **BC Break**: Bumped minimum PHP version from 7.4 to 8.1
 * **BC Break**: Bumped `psr/log` version from `^1` to `^2.0 || ^3.0`
