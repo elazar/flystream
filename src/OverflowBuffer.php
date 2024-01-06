@@ -4,57 +4,36 @@ namespace Elazar\Flystream;
 
 use League\Flysystem\FilesystemOperator;
 
-class OverflowBuffer implements BufferInterface
+class OverflowBuffer extends AbstractBuffer
 {
     /**
-     * @var resource
+     * @param int|null $maxMemory Maximum amount of data in bytes to buffer
+     *        in memory before using a temporary file, defaults to 2 MB
      */
-    private $stream = null;
-
-    /**
-     * Maximum amount of data in bytes to buffer in memory before using a
-     * temporary file, defaults to 2 MB
-     */
-    private ?int $maxMemory = null;
+    public function __construct(
+        private ?int $maxMemory = null
+    ) {
+        $this->maxMemory = $maxMemory;
+    }
 
     /**
      * {@inheritdoc}
      */
-    public function write(string $data)
+    protected function createStream(): mixed
     {
-        if ($this->stream === null) {
-            $path = 'php://temp';
-            if ($this->maxMemory !== null) {
-                $path .= '/maxmemory:' . ((string) $this->maxMemory);
-            }
-            $this->stream = fopen($path, 'r+');
+        $path = 'php://temp';
+        if ($this->maxMemory !== null) {
+            $path .= '/maxmemory:' . ((string) $this->maxMemory);
         }
-        return fwrite($this->stream, $data);
+        return fopen($path, 'r+');
     }
 
-    public function flush(
-        FilesystemOperator $filesystem,
-        string $path,
-        array $context
-    ): void {
-        fseek($this->stream, 0);
-
-        $filesystem->writeStream(
-            $path,
-            $this->stream,
-            $context
-        );
-    }
-
+    /**
+     * @param int $maxMemory Maximum amount of data in bytes to buffer in
+     *        memory before using a temporary file, defaults to 2 MB
+     */
     public function setMaxMemory(int $maxMemory): void
     {
         $this->maxMemory = $maxMemory;
-    }
-
-    public function close(): void
-    {
-        if (is_resource($this->stream)) {
-            fclose($this->stream);
-        }
     }
 }
