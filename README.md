@@ -27,7 +27,7 @@ Released under the [MIT License](https://en.wikipedia.org/wiki/MIT_License).
 
 ## Requirements
 
-* PHP 7.4+
+* PHP 8.1+
 * Flysystem 2 or 3
 
 ## Installation
