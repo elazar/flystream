@@ -23,7 +23,7 @@ Released under the [MIT License](https://en.wikipedia.org/wiki/MIT_License).
 
 ## Known Issues
 
-* If a file or directory handle is not explicitly closed after use (i.e. using [`fclose()`](https://www.php.net/fclose) or [`closedir()`](https://www.php.net/closedir) as appropriate), PHP will implicitly attempt to close it during [shutdown](https://www.php.net/manual/en/function.register-shutdown-function.php). This situation may trigger a segmentation fault in some environments. This issue has [been resolved](https://github.com/elazar/xdebug-date-stream-php-segfault) and should be available in near-future releases of 7.4, 8.0, and 8.1. In the interim, the easiest work-around is to ensure that file and directory handles are explicitly closed.
+* If a file or directory handle is not explicitly closed after use (i.e. using [`fclose()`](https://www.php.net/fclose) or [`closedir()`](https://www.php.net/closedir) as appropriate), PHP will implicitly attempt to close it during [shutdown](https://www.php.net/manual/en/function.register-shutdown-function.php). This situation may trigger a segmentation fault in some environments. This issue has [been resolved](https://github.com/elazar/xdebug-date-stream-php-segfault) and is available in PHP 7.4.23, 8.0.10, and 8.1.0. In older versions, the easiest work-around is to ensure that file and directory handles are explicitly closed.
 
 ## Requirements
 
