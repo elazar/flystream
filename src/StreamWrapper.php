@@ -9,15 +9,11 @@ use League\Flysystem\Config;
 use League\Flysystem\FilesystemOperator;
 use League\Flysystem\UnableToWriteFile;
 use League\Flysystem\UnixVisibility\VisibilityConverter;
-use Pimple\Container;
-use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
 class StreamWrapper
 {
-    private ?Lock $lock = null;
-
     private ?string $path = null;
 
     private ?string $mode = null;
@@ -29,10 +25,20 @@ class StreamWrapper
      */
     private $read = null;
 
-    private ?BufferInterface $buffer = null;
-
     /** @var resource */
     public $context;
+
+    private ?Lock $lock = null;
+
+    private ?BufferInterface $buffer = null;
+
+    public function __construct(
+        private VisibilityConverter $visibilityConverter,
+        private FilesystemRegistry $filesystemRegistry,
+        private LockRegistryInterface $lockRegistry,
+        private BufferFactoryInterface $bufferFactory,
+        private LoggerInterface $logger,
+    ) { }
 
     public function dir_closedir(): bool
     {
@@ -86,12 +92,11 @@ class StreamWrapper
     public function mkdir(string $path, int $mode, int $options): bool
     {
         $this->log('info', __METHOD__, func_get_args());
-        $visibility = $this->get(VisibilityConverter::class);
         $filesystem = $this->getFilesystem($path);
         try {
             $config = $this->getConfig($path, [
                 Config::OPTION_DIRECTORY_VISIBILITY =>
-                    $visibility->inverseForDirectory($mode),
+                    $this->visibilityConverter->inverseForDirectory($mode),
             ]);
             $filesystem->createDirectory($path, $config);
             return true;
@@ -192,8 +197,6 @@ class StreamWrapper
     {
         $this->log('info', __METHOD__, func_get_args());
 
-        $locks = $this->get(LockRegistryInterface::class);
-
         // For now, ignore non-blocking requests
         $operation &= ~LOCK_NB;
 
@@ -204,14 +207,14 @@ class StreamWrapper
                 ? Lock::TYPE_SHARED
                 : Lock::TYPE_EXCLUSIVE;
             $lock = new Lock($this->path, $type);
-            $result = $locks->acquire($lock);
+            $result = $this->lockRegistry->acquire($lock);
             if ($result) {
                 $this->lock = $lock;
             }
             return $result;
         }
 
-        $result = $locks->release($this->lock);
+        $result = $this->lockRegistry->release($this->lock);
         if ($result) {
             $this->lock = null;
         }
@@ -331,7 +334,7 @@ class StreamWrapper
                 );
             }
             if ($this->buffer === null) {
-                $this->buffer = $this->get(BufferInterface::class);
+                $this->buffer = $this->bufferFactory->createBuffer();
             }
             return $this->buffer->write($data);
         } catch (Throwable $e) {
@@ -369,13 +372,12 @@ class StreamWrapper
         $this->log('info', __METHOD__, func_get_args());
 
         $filesystem = $this->getFilesystem($path);
-        $visibility = $this->get(VisibilityConverter::class);
 
         if (!$filesystem->fileExists($path)) {
             return false;
         }
 
-        $mode = 0100000 | $visibility->forFile(
+        $mode = 0100000 | $this->visibilityConverter->forFile(
             $filesystem->visibility($path)
         );
         $size = $filesystem->fileSize($path);
@@ -412,13 +414,7 @@ class StreamWrapper
     private function getFilesystem(string $path): FilesystemOperator
     {
         $protocol = parse_url($path, PHP_URL_SCHEME);
-        $registry = $this->get(FilesystemRegistry::class);
-        return $registry->get($protocol);
-    }
-
-    private function get(string $key)
-    {
-        return ServiceLocator::get($key);
+        return $this->filesystemRegistry->get($protocol);
     }
 
     private function getDir(string $path): Iterator
@@ -451,7 +447,6 @@ class StreamWrapper
         string $message,
         array $context = []
     ): void {
-        $logger = $this->get(LoggerInterface::class);
-        $logger->log($level, $message, $context);
+        $this->logger->log($level, $message, $context);
     }
 }

@@ -9,6 +9,8 @@ class FlystreamException extends \RuntimeException
     public const CODE_PROTOCOL_REGISTERED = 1;
     public const CODE_PROTOCOL_NOT_REGISTERED = 2;
     public const CODE_CONTAINER_ENTRY_NOT_FOUND = 3;
+    public const CODE_BUFFER_CLASS_NOT_FOUND = 4;
+    public const CODE_BUFFER_CLASS_MISSING_INTERFACE = 5;
 
     public static function protocolRegistered(string $protocol): self
     {
@@ -41,5 +43,28 @@ class FlystreamException extends \RuntimeException
             ),
             self::CODE_CONTAINER_ENTRY_NOT_FOUND
         ) extends FlystreamException implements NotFoundExceptionInterface { };
+    }
+
+    public static function bufferClassNotFound(string $bufferClassFqcn): self
+    {
+        return new self(
+            sprintf(
+                'Specified buffer class not found: %s',
+                $bufferClassFqcn
+            ),
+            self::CODE_BUFFER_CLASS_NOT_FOUND
+        );
+    }
+
+    public static function bufferClassMissingInterface(string $bufferClassFqcn): self
+    {
+        return new self(
+            sprintf(
+                'Specified buffer class does not implement %s: %s',
+                BufferInterface::class,
+                $bufferClassFqcn
+            ),
+            self::CODE_BUFFER_CLASS_MISSING_INTERFACE
+        );
     }
 }

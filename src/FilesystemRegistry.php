@@ -24,7 +24,7 @@ class FilesystemRegistry
             throw FlystreamException::protocolRegistered($protocol);
         }
         $this->filesystems[$protocol] = $filesystem;
-        stream_wrapper_register($protocol, StreamWrapper::class);
+        stream_wrapper_register($protocol, PhpStreamWrapper::class);
     }
 
     public function unregister(

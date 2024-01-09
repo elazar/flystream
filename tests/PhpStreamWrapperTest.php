@@ -1,8 +1,8 @@
 <?php
 
+use Elazar\Flystream\Container;
 use Elazar\Flystream\FilesystemRegistry;
-use Elazar\Flystream\ServiceLocator;
-use League\Flysystem\FileAttributes;
+use Elazar\Flystream\PhpStreamWrapper;
 use League\Flysystem\Filesystem;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 use League\Flysystem\PathNormalizer;
@@ -11,14 +11,15 @@ use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
 beforeEach(function () {
-    $serviceLocator = new ServiceLocator();
-    ServiceLocator::setInstance($serviceLocator);
+    $this->container = new Container();
 
     $this->logger = new Logger(__FILE__);
     $this->logger->pushHandler(new TestHandler);
-    ServiceLocator::set(LoggerInterface::class, $this->logger);
+    $this->container->set(LoggerInterface::class, $this->logger);
 
-    $this->registry = ServiceLocator::get(FilesystemRegistry::class);
+    PhpStreamWrapper::setContainer($this->container);
+
+    $this->registry = $this->container->get(FilesystemRegistry::class);
 
     $this->filesystem = new Filesystem(new InMemoryFilesystemAdapter);
     $this->registry->register('fly', $this->filesystem);
@@ -266,7 +267,7 @@ it('can read and write to a Flysystem filesystem', function () {
     $this->filesystem = new Filesystem(
         new InMemoryFilesystemAdapter(),
         [],
-        ServiceLocator::get(PathNormalizer::class),
+        $this->container->get(PathNormalizer::class),
     );
     $this->registry->register('mem', $this->filesystem);
 

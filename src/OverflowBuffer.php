@@ -36,4 +36,9 @@ class OverflowBuffer extends AbstractBuffer
     {
         $this->maxMemory = $maxMemory;
     }
+
+    public function getMaxMemory(): ?int
+    {
+        return $this->maxMemory;
+    }
 }

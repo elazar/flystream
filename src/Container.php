@@ -41,10 +41,7 @@ class Container implements ContainerInterface, IteratorAggregate
             LocalLockRegistry::class => fn() => new LocalLockRegistry,
             NullLogger::class => fn() => new NullLogger,
             LoggerInterface::class => fn() => $this->get(NullLogger::class),
-            BufferInterface::class => fn() => $this->get(MemoryBuffer::class),
-            MemoryBuffer::class => fn() => new MemoryBuffer,
-            OverflowBuffer::class => fn() => new OverflowBuffer,
-            FileBuffer::class => fn() => new FileBuffer,
+            BufferFactoryInterface::class => fn() => BufferFactory::fromClass(MemoryBuffer::class),
         ];
 
         $this->instances = [];
