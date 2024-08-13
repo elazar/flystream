@@ -34,6 +34,12 @@ it('can create and delete directories', function () {
     rmdir('fly://foo');
 });
 
+it('can detect a directory', function () {
+    mkdir('fly://foo');
+    expect(is_dir('fly://foo'))->toBeTrue();
+    rmdir('fly://foo');
+});
+
 it('can copy an empty file', function () {
     $success = touch('fly://src');
     expect($success)->toBe(true);

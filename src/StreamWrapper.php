@@ -371,15 +371,21 @@ class StreamWrapper
         $filesystem = $this->getFilesystem($path);
         $visibility = $this->get(VisibilityConverter::class);
 
-        if (!$filesystem->fileExists($path)) {
+        if ($filesystem->fileExists($path)) {
+            $mode = 0100000 | $visibility->forFile(
+                    $filesystem->visibility($path)
+                );
+            $size =  $filesystem->fileSize($path);
+            $mtime = $filesystem->lastModified($path);
+        } else if ($filesystem->directoryExists($path)) {
+            $mode = 0040000 | $visibility->forDirectory(
+                    $filesystem->visibility($path)
+                );
+            $size =  0;
+            $mtime = $filesystem->lastModified($path);
+        } else {
             return false;
         }
-
-        $mode = 0100000 | $visibility->forFile(
-            $filesystem->visibility($path)
-        );
-        $size = $filesystem->fileSize($path);
-        $mtime = $filesystem->lastModified($path);
 
         return [
             'dev' => 0,
@@ -402,7 +408,7 @@ class StreamWrapper
     {
         $config = [];
         if ($this->context !== null) {
-            $protocol = parse_url($path, PHP_URL_SCHEME);
+            $protocol = $this->getProtocol($path);
             $context = stream_context_get_options($this->context);
             $config = $context[$protocol] ?? [];
         }
@@ -411,9 +417,24 @@ class StreamWrapper
 
     private function getFilesystem(string $path): FilesystemOperator
     {
-        $protocol = parse_url($path, PHP_URL_SCHEME);
+        $protocol = $this->getProtocol($path);
         $registry = $this->get(FilesystemRegistry::class);
         return $registry->get($protocol);
+    }
+
+    /**
+     * parse_url() chokes on path-less URLs (like foo://), so in that case, fall back to manual parsing.
+     *
+     * @param string $path
+     * @return string
+     */
+    private function getProtocol(string $path): ?string
+    {
+        $protocol = parse_url($path, PHP_URL_SCHEME);
+        if ($protocol === false && ($pos = strpos($path, ':/')) !== false) {
+            $protocol = substr($path, 0, $pos);
+        }
+        return $protocol ?: null;
     }
 
     private function get(string $key)
