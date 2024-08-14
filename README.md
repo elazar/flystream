@@ -54,14 +54,20 @@ These examples below aren't comprehensive, but should provide a basic understand
 <?php
 
 /**
- * 1. Configure your Flysystem filesystem as normal.
+ * 1. Configure your Flysystem filesystem to use the Flystream path
+ *    normalizer; see the "Path Normalization" section of this README for
+ *    more details.
  */
 
+use Elazar\Flystream\ServiceLocator;
 use League\Flysystem\Filesystem;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
+use League\Flysystem\PathNormalizer;
 
 $adapter = new InMemoryFilesystemAdapter;
-$filesystem = new Filesystem($adapter);
+$config = [ /* ... */ ];
+$pathNormalizer = ServiceLocator::get(PathNormalizer::class);
+$filesystem = new Filesystem($adapter, $config, $pathNormalizer);
 
 /**
  * 2. Register the filesystem with Flystream and associate it with a
@@ -69,13 +75,12 @@ $filesystem = new Filesystem($adapter);
  */
 
 use Elazar\Flystream\FilesystemRegistry;
-use Elazar\Flystream\ServiceLocator;
 
 $registry = ServiceLocator::get(FilesystemRegistry::class);
 $registry->register('mem', $filesystem);
 
 /**
- * 3. Interact with the filesystem instance using the custom protocol.
+ * 3. Interact with the filesystem using the custom protocol.
  */
 
 mkdir('mem://foo');
