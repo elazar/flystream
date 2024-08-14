@@ -32,7 +32,7 @@ class TestInMemoryFilesystemAdapter implements FilesystemAdapter
     ) {
         $this->adapter = new InMemoryFilesystemAdapter(
             $defaultVisibility,
-            $mimeTypeDetector ?? new FinfoMimeTypeDetector,
+            $mimeTypeDetector ?? new FinfoMimeTypeDetector(),
         );
         $this->directories = [];
     }
@@ -153,4 +153,3 @@ class TestInMemoryFilesystemAdapter implements FilesystemAdapter
         return '/' . trim($path, '/') . '/';
     }
 }
-

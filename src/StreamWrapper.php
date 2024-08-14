@@ -373,14 +373,14 @@ class StreamWrapper
 
         if ($filesystem->fileExists($path)) {
             $mode = 0100000 | $visibility->forFile(
-                    $filesystem->visibility($path)
-                );
+                $filesystem->visibility($path)
+            );
             $size =  $filesystem->fileSize($path);
             $mtime = $filesystem->lastModified($path);
-        } else if ($filesystem->directoryExists($path)) {
+        } elseif ($filesystem->directoryExists($path)) {
             $mode = 0040000 | $visibility->forDirectory(
-                    $filesystem->visibility($path)
-                );
+                $filesystem->visibility($path)
+            );
             $size =  0;
             $mtime = $filesystem->lastModified($path);
         } else {
