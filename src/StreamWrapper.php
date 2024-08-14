@@ -426,7 +426,7 @@ class StreamWrapper
      * parse_url() chokes on path-less URLs (like foo://), so in that case, fall back to manual parsing.
      *
      * @param string $path
-     * @return string
+     * @return string|null
      */
     private function getProtocol(string $path): ?string
     {
