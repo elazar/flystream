@@ -2,9 +2,9 @@
 
 use Elazar\Flystream\FilesystemRegistry;
 use Elazar\Flystream\ServiceLocator;
+use Elazar\Flystream\Tests\TestInMemoryFilesystemAdapter;
 use League\Flysystem\FileAttributes;
 use League\Flysystem\Filesystem;
-use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 use League\Flysystem\PathNormalizer;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
@@ -20,7 +20,11 @@ beforeEach(function () {
 
     $this->registry = ServiceLocator::get(FilesystemRegistry::class);
 
-    $this->filesystem = new Filesystem(new InMemoryFilesystemAdapter());
+    $this->filesystem = new Filesystem(
+        new TestInMemoryFilesystemAdapter(),
+        [],
+        ServiceLocator::get(PathNormalizer::class),
+    );
     $this->registry->register('fly', $this->filesystem);
 });
 
@@ -31,6 +35,12 @@ afterEach(function () {
 it('can create and delete directories', function () {
     $result = mkdir('fly://foo');
     expect($result)->toBeTrue();
+    rmdir('fly://foo');
+});
+
+it('can detect a directory', function () {
+    mkdir('fly://foo');
+    expect(is_dir('fly://foo'))->toBeTrue();
     rmdir('fly://foo');
 });
 
@@ -70,7 +80,7 @@ it('can iterate over a non-empty directory', function () {
     fclose($file);
     $dir = opendir('fly://foo');
     $result = readdir($dir);
-    expect($result)->toBe('fly:/foo/bar');
+    expect($result)->toBe('foo/bar');
     closedir($dir);
 });
 
@@ -80,10 +90,10 @@ it('can rewind a directory iterator', function () {
     fclose($file);
     $dir = opendir('fly://foo');
     $result = readdir($dir);
-    expect($result)->toBe('fly:/foo/bar');
+    expect($result)->toBe('foo/bar');
     rewinddir($dir);
     $result = readdir($dir);
-    expect($result)->toBe('fly:/foo/bar');
+    expect($result)->toBe('foo/bar');
     closedir($dir);
 });
 
@@ -263,19 +273,11 @@ it('supports stream selection', function () {
 });
 
 it('can read and write to a Flysystem filesystem', function () {
-    $this->filesystem = new Filesystem(
-        new InMemoryFilesystemAdapter(),
-        [],
-        ServiceLocator::get(PathNormalizer::class),
-    );
-    $this->registry->register('mem', $this->filesystem);
-
     $path = 'foo';
     $expected = 'bar';
     $this->filesystem->write($path, $expected);
 
-    $actual = file_get_contents("mem://$path");
-    $this->registry->unregister('mem');
+    $actual = file_get_contents("fly://$path");
 
     expect($actual)->toBe($expected);
 });
