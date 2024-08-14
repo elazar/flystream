@@ -55,14 +55,16 @@ it('cannot acquire an exclusive lock with contention', function () {
 it('releases locks when going out of scope', function () {
     $testLock = new Lock('foo', Lock::TYPE_EXCLUSIVE);
     $released = false;
-    $registry = new class($testLock, $released) extends LocalLockRegistry {
+    $registry = new class ($testLock, $released) extends LocalLockRegistry {
         private Lock $testLock;
         private bool $released;
-        public function __construct(Lock $testLock, bool &$released) {
+        public function __construct(Lock $testLock, bool &$released)
+        {
             $this->testLock = $testLock;
             $this->released = &$released;
         }
-        public function release(Lock $lock): bool {
+        public function release(Lock $lock): bool
+        {
             $this->released = true;
             expect($lock)->toBe($this->testLock);
             return parent::release($lock);
