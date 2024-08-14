@@ -10,13 +10,13 @@ class ServiceLocator
 
     public function __construct()
     {
-        $this->container = new Container;
+        $this->container = new Container();
     }
 
     public static function getInstance(): self
     {
         if (self::$instance === null) {
-            self::$instance = new self;
+            self::$instance = new self();
         }
         return self::$instance;
     }

@@ -1,11 +1,16 @@
 name: CI
 
-on: [push]
+on:
+  push: ~
+  pull_request: ~
 
 jobs:
   build-test:
+    name: PHPUnit tests on ${{ matrix.php }}
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        php: [ '8.1', '8.2', '8.3' ]
     steps:
     - uses: actions/checkout@v2
     - uses: php-actions/composer@v6
@@ -14,3 +19,11 @@ jobs:
         sudo chmod -R 777 vendor/pestphp/pest/.temp
         vendor/bin/pest
 
+  build-code-style:
+    name: PHP-CS-Fixer checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: php-actions/composer@v6
+      - name: Run CS-Fixer
+        run: vendor/bin/php-cs-fixer check

@@ -27,24 +27,24 @@ class Container implements ContainerInterface, IteratorAggregate
     public function __construct()
     {
         $this->entries = [
-            FilesystemRegistry::class => fn() => new FilesystemRegistry,
-            PassThruPathNormalizer::class => fn() => new PassThruPathNormalizer,
-            StripProtocolPathNormalizer::class => fn() => new StripProtocolPathNormalizer(
+            FilesystemRegistry::class => fn () => new FilesystemRegistry(),
+            PassThruPathNormalizer::class => fn () => new PassThruPathNormalizer(),
+            StripProtocolPathNormalizer::class => fn () => new StripProtocolPathNormalizer(
                 null,
                 $this->get(WhitespacePathNormalizer::class),
             ),
-            PathNormalizer::class => fn() => $this->get(StripProtocolPathNormalizer::class),
-            WhitespacePathNormalizer::class => fn() => new WhitespacePathNormalizer,
-            PortableVisibilityConverter::class => fn() => new PortableVisibilityConverter,
-            VisibilityConverter::class => fn() => $this->get(PortableVisibilityConverter::class),
-            LockRegistryInterface::class => fn() => $this->get(LocalLockRegistry::class),
-            LocalLockRegistry::class => fn() => new LocalLockRegistry,
-            NullLogger::class => fn() => new NullLogger,
-            LoggerInterface::class => fn() => $this->get(NullLogger::class),
-            BufferInterface::class => fn() => $this->get(MemoryBuffer::class),
-            MemoryBuffer::class => fn() => new MemoryBuffer,
-            OverflowBuffer::class => fn() => new OverflowBuffer,
-            FileBuffer::class => fn() => new FileBuffer,
+            PathNormalizer::class => fn () => $this->get(StripProtocolPathNormalizer::class),
+            WhitespacePathNormalizer::class => fn () => new WhitespacePathNormalizer(),
+            PortableVisibilityConverter::class => fn () => new PortableVisibilityConverter(),
+            VisibilityConverter::class => fn () => $this->get(PortableVisibilityConverter::class),
+            LockRegistryInterface::class => fn () => $this->get(LocalLockRegistry::class),
+            LocalLockRegistry::class => fn () => new LocalLockRegistry(),
+            NullLogger::class => fn () => new NullLogger(),
+            LoggerInterface::class => fn () => $this->get(NullLogger::class),
+            BufferInterface::class => fn () => $this->get(MemoryBuffer::class),
+            MemoryBuffer::class => fn () => new MemoryBuffer(),
+            OverflowBuffer::class => fn () => new OverflowBuffer(),
+            FileBuffer::class => fn () => new FileBuffer(),
         ];
 
         $this->instances = [];

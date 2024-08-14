@@ -15,13 +15,13 @@ beforeEach(function () {
     ServiceLocator::setInstance($serviceLocator);
 
     $this->logger = new Logger(__FILE__);
-    $this->logger->pushHandler(new TestHandler);
+    $this->logger->pushHandler(new TestHandler());
     ServiceLocator::set(LoggerInterface::class, $this->logger);
 
     $this->registry = ServiceLocator::get(FilesystemRegistry::class);
 
     $this->filesystem = new Filesystem(
-        new TestInMemoryFilesystemAdapter,
+        new TestInMemoryFilesystemAdapter(),
         [],
         ServiceLocator::get(PathNormalizer::class),
     );

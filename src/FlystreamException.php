@@ -34,12 +34,6 @@ class FlystreamException extends \RuntimeException
 
     public static function containerEntryNotFound(string $id): self
     {
-        return new class(
-            sprintf(
-                'Specified container entry not found: %s',
-                $id
-            ),
-            self::CODE_CONTAINER_ENTRY_NOT_FOUND
-        ) extends FlystreamException implements NotFoundExceptionInterface { };
+        return new class (sprintf('Specified container entry not found: %s', $id), self::CODE_CONTAINER_ENTRY_NOT_FOUND) extends FlystreamException implements NotFoundExceptionInterface { };
     }
 }
