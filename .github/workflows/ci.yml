@@ -18,4 +18,5 @@ jobs:
       run: |
         sudo chmod -R 777 vendor/pestphp/pest/.temp
         vendor/bin/pest
-
+    - name: Run CS-Fixer
+      run: vendor/bin/php-cs-fixer check
