@@ -18,5 +18,12 @@ jobs:
       run: |
         sudo chmod -R 777 vendor/pestphp/pest/.temp
         vendor/bin/pest
-    - name: Run CS-Fixer
-      run: vendor/bin/php-cs-fixer check
+
+  build-code-style:
+    name: PHP-CS-Fixer checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: php-actions/composer@v6
+      - name: Run CS-Fixer
+        run: vendor/bin/php-cs-fixer check
