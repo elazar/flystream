@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [1.1.0](https://github.com/elazar/flystream/releases/tag/1.1.0)
+
+2024-08-14
+
+* Fixed a bug related to path-less stream URL handling ([#9](https://github.com/elazar/flystream/pull/9)) - thanks @Crell
+* Fixed a bug related to directory handling in `StreamWrapper->url_stat()` ([#9](https://github.com/elazar/flystream/pull/9)) - thanks @Crell
+* Added a `LICENSE.txt` file ([#10](https://github.com/elazar/flystream/pull/10)) - thanks @Crell
+* Configured GitHub Actions to run CS-Fixer and tests on all PRs and supported PHP versions ([#11](https://github.com/elazar/flystream/pull/11)) - thanks @Crell
+
 ## [1.0.0](https://github.com/elazar/flystream/releases/tag/1.0.0)
 
 2024-01-06
