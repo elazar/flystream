@@ -15,12 +15,12 @@ beforeEach(function () {
     ServiceLocator::setInstance($serviceLocator);
 
     $this->logger = new Logger(__FILE__);
-    $this->logger->pushHandler(new TestHandler);
+    $this->logger->pushHandler(new TestHandler());
     ServiceLocator::set(LoggerInterface::class, $this->logger);
 
     $this->registry = ServiceLocator::get(FilesystemRegistry::class);
 
-    $this->filesystem = new Filesystem(new InMemoryFilesystemAdapter);
+    $this->filesystem = new Filesystem(new InMemoryFilesystemAdapter());
     $this->registry->register('fly', $this->filesystem);
 });
 

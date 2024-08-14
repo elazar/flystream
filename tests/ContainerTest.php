@@ -7,7 +7,7 @@ use Elazar\Flystream\FlystreamException;
 use Elazar\Flystream\MemoryBuffer;
 
 it('can iterate, detect, and get default entries', function () {
-    $container = new Container;
+    $container = new Container();
     $expectedDependencyCount = 15;
     $actualDependencyCount = 0;
     foreach ($container as $class => $instance) {
@@ -19,11 +19,11 @@ it('can iterate, detect, and get default entries', function () {
 });
 
 it('throws an exception for an unknown key', function () {
-    (new Container)->get('unknown-key');
+    (new Container())->get('unknown-key');
 })->throws(FlystreamException::class);
 
 it('can override a dependency using a class name', function () {
-    $container = new Container;
+    $container = new Container();
 
     $default = $container->get(BufferInterface::class);
     expect($default)->toBeInstanceOf(MemoryBuffer::class);
@@ -35,9 +35,9 @@ it('can override a dependency using a class name', function () {
 });
 
 it('can override a dependency using an instance', function () {
-    $container = new Container;
+    $container = new Container();
 
-    $buffer = new FileBuffer;
+    $buffer = new FileBuffer();
     $container->set(BufferInterface::class, $buffer);
 
     $override = $container->get(BufferInterface::class);
