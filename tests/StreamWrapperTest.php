@@ -281,3 +281,14 @@ it('can read and write to a Flysystem filesystem', function () {
 
     expect($actual)->toBe($expected);
 });
+
+it('can stat a file', function () {
+    $result = file_put_contents('fly://foo', 'foobar');
+    expect(file_exists('fly://foo'))->toBeTrue();
+
+    $stream = fopen('fly://foo', 'r');
+    $metadata = \stream_get_meta_data($stream);
+    expect($metadata['uri'])->toEqual('fly://foo');
+    fclose($stream);
+    ;
+});
