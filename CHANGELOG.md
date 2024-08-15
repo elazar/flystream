@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [1.2.0](https://github.com/elazar/flystream/releases/tag/1.2.0)
+
+2024-08-15
+
+* Fixed a bug in `StreamWrapper->stream_open()` related to opening read streams ([#14](https://github.com/elazar/flystream/pull/14)) - thanks @Crell
+
 ## [1.1.0](https://github.com/elazar/flystream/releases/tag/1.1.0)
 
 2024-08-14
