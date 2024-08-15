@@ -127,6 +127,8 @@ it('can handle writes that force a buffer flush', function () {
 });
 
 it('can acquire multiple shared locks', function () {
+    createFile('fly://foo');
+
     $stream1 = fopen('fly://foo', 'r');
     $result = flock($stream1, LOCK_SH);
     expect($result)->toBeTrue();
@@ -156,6 +158,8 @@ it('cannot acquire multiple exclusive locks', function () {
 });
 
 it('cannot acquire an exclusive lock with existing locks', function () {
+    createFile('fly://foo');
+
     $stream1 = fopen('fly://foo', 'r');
     $result = flock($stream1, LOCK_SH);
     expect($result)->toBeTrue();
