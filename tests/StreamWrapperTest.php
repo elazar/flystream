@@ -10,6 +10,13 @@ use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
+function createFile(string $uri): void
+{
+    $result = touch($uri);
+    expect($result)->toBeTrue();
+    expect(file_exists($uri))->toBeTrue();
+}
+
 beforeEach(function () {
     $serviceLocator = new ServiceLocator();
     ServiceLocator::setInstance($serviceLocator);
@@ -45,8 +52,7 @@ it('can detect a directory', function () {
 });
 
 it('can copy an empty file', function () {
-    $success = touch('fly://src');
-    expect($success)->toBe(true);
+    createFile('fly://src');
 
     $success = copy('fly://src', 'fly://dst');
     expect($success)->toBe(true);
@@ -98,9 +104,7 @@ it('can rewind a directory iterator', function () {
 });
 
 it('can rename an existing file', function () {
-    $result = touch('fly://foo');
-    expect($result)->toBeTrue();
-    expect(file_exists('fly://foo'))->toBeTrue();
+    createFile('fly://foo');
     $result = rename('fly://foo', 'fly://bar');
     expect($result)->toBeTrue();
     clearstatcache();
@@ -166,9 +170,7 @@ it('cannot acquire an exclusive lock with existing locks', function () {
 });
 
 it('does not support operations to change owner, group, or access', function () {
-    $result = touch('fly://foo');
-    expect($result)->toBeTrue();
-    expect(file_exists('fly://foo'))->toBeTrue();
+    createFile('fly://foo');
 
     $result = chmod('fly://foo', 0755);
     expect($result)->toBeFalse();
