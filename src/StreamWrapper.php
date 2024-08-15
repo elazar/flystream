@@ -259,6 +259,8 @@ class StreamWrapper
         if (strpbrk($mode, 'waxc') !== false) {
             $this->stream_write('');
             $this->stream_flush();
+        } elseif (strpbrk($mode, 'r') !== false) {
+            $this->openRead();
         }
         return true;
     }
