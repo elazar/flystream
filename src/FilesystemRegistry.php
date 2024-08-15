@@ -42,6 +42,11 @@ class FilesystemRegistry
         return $this->filesystems[$protocol];
     }
 
+    public function has(string $protocol): bool
+    {
+        return array_key_exists($protocol, $this->filesystems);
+    }
+
     private function checkForProtocol(string $protocol): void
     {
         if (!isset($this->filesystems[$protocol])) {

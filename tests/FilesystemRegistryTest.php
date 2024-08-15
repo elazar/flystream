@@ -53,3 +53,11 @@ it('unregisters an existing protocol', function () {
     FlystreamException::class,
     'Specified protocol is not registered: foo'
 );
+
+it('knows when a protocol is already registered', function () {
+    expect($this->registry->has('beep'))->toEqual(false);
+    $this->registry->register('beep', $this->filesystem);
+    expect($this->registry->has('beep'))->toEqual(true);
+    $this->registry->unregister('beep');
+    expect($this->registry->has('beep'))->toEqual(false);
+});
