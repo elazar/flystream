@@ -7,6 +7,7 @@ use Iterator;
 use IteratorAggregate;
 use League\Flysystem\Config;
 use League\Flysystem\FilesystemOperator;
+use League\Flysystem\PathNormalizer;
 use League\Flysystem\UnableToWriteFile;
 use League\Flysystem\UnixVisibility\VisibilityConverter;
 use Pimple\Container;
@@ -367,15 +368,21 @@ class StreamWrapper
         $filesystem = $this->getFilesystem($path);
         $visibility = $this->get(VisibilityConverter::class);
 
-        if (!$filesystem->fileExists($path)) {
+        if ($filesystem->fileExists($path)) {
+            $mode = 0100000 | $visibility->forFile(
+                $filesystem->visibility($path)
+            );
+            $size =  $filesystem->fileSize($path);
+            $mtime = $filesystem->lastModified($path);
+        } elseif ($this->directoryExists($path)) {
+            $mode = 0040000 | $visibility->forDirectory(
+                $filesystem->visibility($path)
+            );
+            $size =  0;
+            $mtime = $filesystem->lastModified($path);
+        } else {
             return false;
         }
-
-        $mode = 0100000 | $visibility->forFile(
-            $filesystem->visibility($path)
-        );
-        $size = $filesystem->fileSize($path);
-        $mtime = $filesystem->lastModified($path);
 
         return [
             'dev' => 0,
@@ -415,6 +422,28 @@ class StreamWrapper
     private function get(string $key)
     {
         return ServiceLocator::getInstance()->getContainer()[$key];
+    }
+
+    private function directoryExists($path)
+    {
+        $filesystem = $this->getFilesystem($path);
+
+        if (method_exists($filesystem, 'directoryExists')) {
+            return $filesystem->directoryExists($path);
+        }
+
+        $pathNormalizer = $this->get(PathNormalizer::class);
+        $path = $pathNormalizer->normalizePath($path);
+
+        $parentDirectoryPath = dirname($path);
+        $parentDirectoryContents = $filesystem->listContents($parentDirectoryPath);
+
+        foreach ($parentDirectoryContents as $entry) {
+            if ($entry->path() === $path) {
+                return $entry->isDir();
+            }
+        }
+        return false;
     }
 
     private function getDir(string $path): Iterator
