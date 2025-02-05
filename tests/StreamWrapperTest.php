@@ -40,11 +40,19 @@ afterEach(function () {
     $this->registry->unregister('fly');
 });
 
-it('can create and delete directories', function () {
-    $result = mkdir('fly://foo');
-    expect($result)->toBeTrue();
-    rmdir('fly://foo');
-});
+it('can detect, create, and delete directories', function () {
+    $this->assertFalse(is_dir('fly://foo'));
+
+    $mkResult = mkdir('fly://foo');
+    expect($mkResult)->toBeTrue();
+
+    $this->assertTrue(is_dir('fly://foo'));
+
+    $rmResult = rmdir('fly://foo');
+    expect($rmResult)->toBeTrue();
+
+    $this->assertFalse(is_dir('fly://foo'));
+})->only();
 
 it('handles opening a nonexistent directory', function () {
     $dir = opendir('fly://foo');
