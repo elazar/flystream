@@ -42,15 +42,11 @@ afterEach(function () {
 
 it('can detect, create, and delete directories', function () {
     $this->assertFalse(is_dir('fly://foo'));
-
     $mkResult = mkdir('fly://foo');
     expect($mkResult)->toBeTrue();
-
     $this->assertTrue(is_dir('fly://foo'));
-
     $rmResult = rmdir('fly://foo');
     expect($rmResult)->toBeTrue();
-
     $this->assertFalse(is_dir('fly://foo'));
 })->only();
 
