@@ -89,12 +89,17 @@ class StreamWrapper
         $this->log('info', __METHOD__, func_get_args());
         $visibility = $this->get(VisibilityConverter::class);
         $filesystem = $this->getFilesystem($path);
+        /** @var PathNormalizer $normalizer */
+        $normalizer = $this->get(PathNormalizer::class);
         try {
             $config = $this->getConfig($path, [
                 Config::OPTION_DIRECTORY_VISIBILITY =>
                     $visibility->inverseForDirectory($mode),
             ]);
-            $filesystem->createDirectory($path, $config);
+            $filesystem->createDirectory(
+                $normalizer->normalizePath($path),
+                $config
+            );
             return true;
             // @codeCoverageIgnoreStart
         } catch (Throwable $e) {
@@ -126,8 +131,12 @@ class StreamWrapper
     {
         $this->log('info', __METHOD__, func_get_args());
         $filesystem = $this->getFilesystem($path);
+        /** @var PathNormalizer $normalizer */
+        $normalizer = $this->get(PathNormalizer::class);
         try {
-            $filesystem->deleteDirectory($path);
+            $filesystem->deleteDirectory(
+                $normalizer->normalizePath($path)
+            );
             return true;
 
             // @codeCoverageIgnoreStart
@@ -366,7 +375,11 @@ class StreamWrapper
         $this->log('info', __METHOD__, func_get_args());
 
         $filesystem = $this->getFilesystem($path);
+        /** @var VisibilityConverter $visibility */
         $visibility = $this->get(VisibilityConverter::class);
+
+        /** @var PathNormalizer $normalizer */
+        $normalizer = $this->get(PathNormalizer::class);
 
         if ($filesystem->fileExists($path)) {
             $mode = 0100000 | $visibility->forFile(
@@ -376,10 +389,14 @@ class StreamWrapper
             $mtime = $filesystem->lastModified($path);
         } elseif ($this->directoryExists($path)) {
             $mode = 0040000 | $visibility->forDirectory(
-                $filesystem->visibility($path)
+                $filesystem->visibility(
+                    $normalizer->normalizePath($path)
+                )
             );
             $size =  0;
-            $mtime = $filesystem->lastModified($path);
+            $mtime = $filesystem->lastModified(
+                $normalizer->normalizePath($path)
+            );
         } else {
             return false;
         }
