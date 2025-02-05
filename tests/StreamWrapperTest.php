@@ -32,7 +32,9 @@ beforeEach(function () {
 
     $this->registry = $container[FilesystemRegistry::class];
 
-    $this->filesystem = new Filesystem(new InMemoryFilesystemAdapter());
+    $pathNormalizer = ServiceLocator::getInstance()->getContainer()[PathNormalizer::class];
+    $this->filesystem = new Filesystem(new InMemoryFilesystemAdapter(), [], $pathNormalizer);
+
     $this->registry->register('fly', $this->filesystem);
 });
 

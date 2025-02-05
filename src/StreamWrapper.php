@@ -89,17 +89,12 @@ class StreamWrapper
         $this->log('info', __METHOD__, func_get_args());
         $visibility = $this->get(VisibilityConverter::class);
         $filesystem = $this->getFilesystem($path);
-        /** @var PathNormalizer $normalizer */
-        $normalizer = $this->get(PathNormalizer::class);
         try {
             $config = $this->getConfig($path, [
                 Config::OPTION_DIRECTORY_VISIBILITY =>
                     $visibility->inverseForDirectory($mode),
             ]);
-            $filesystem->createDirectory(
-                $normalizer->normalizePath($path),
-                $config
-            );
+            $filesystem->createDirectory($path, $config);
             return true;
             // @codeCoverageIgnoreStart
         } catch (Throwable $e) {
@@ -131,12 +126,8 @@ class StreamWrapper
     {
         $this->log('info', __METHOD__, func_get_args());
         $filesystem = $this->getFilesystem($path);
-        /** @var PathNormalizer $normalizer */
-        $normalizer = $this->get(PathNormalizer::class);
         try {
-            $filesystem->deleteDirectory(
-                $normalizer->normalizePath($path)
-            );
+            $filesystem->deleteDirectory($path);
             return true;
 
             // @codeCoverageIgnoreStart
@@ -378,9 +369,6 @@ class StreamWrapper
         /** @var VisibilityConverter $visibility */
         $visibility = $this->get(VisibilityConverter::class);
 
-        /** @var PathNormalizer $normalizer */
-        $normalizer = $this->get(PathNormalizer::class);
-
         if ($filesystem->fileExists($path)) {
             $mode = 0100000 | $visibility->forFile(
                 $filesystem->visibility($path)
@@ -389,14 +377,10 @@ class StreamWrapper
             $mtime = $filesystem->lastModified($path);
         } elseif ($this->directoryExists($path)) {
             $mode = 0040000 | $visibility->forDirectory(
-                $filesystem->visibility(
-                    $normalizer->normalizePath($path)
-                )
+                $filesystem->visibility($path)
             );
             $size =  0;
-            $mtime = $filesystem->lastModified(
-                $normalizer->normalizePath($path)
-            );
+            $mtime = $filesystem->lastModified($path);
         } else {
             return false;
         }
@@ -449,6 +433,7 @@ class StreamWrapper
             return $filesystem->directoryExists($path);
         }
 
+        /** @var PathNormalizer $pathNormalizer */
         $pathNormalizer = $this->get(PathNormalizer::class);
         $path = $pathNormalizer->normalizePath($path);
 
