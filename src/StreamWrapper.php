@@ -128,6 +128,7 @@ class StreamWrapper
         $filesystem = $this->getFilesystem($path);
         try {
             $filesystem->deleteDirectory($path);
+            clearstatcache();
             return true;
 
             // @codeCoverageIgnoreStart

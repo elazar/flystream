@@ -51,7 +51,6 @@ it('can detect, create, and delete directories', function () {
     $this->assertTrue(is_dir('fly://foo'));
     $rmResult = rmdir('fly://foo');
     expect($rmResult)->toBeTrue();
-    clearstatcache();
     $this->assertFalse(is_dir('fly://foo'));
 })->only();
 
