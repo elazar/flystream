@@ -26,14 +26,17 @@ class TestInMemoryFilesystemAdapter implements FilesystemAdapter
     /** @var array<string, FileAttributes> */
     private array $directories;
 
+    private string $defaultVisibility;
+
     public function __construct(
-        private string $defaultVisibility = Visibility::PUBLIC,
+        string $defaultVisibility = Visibility::PUBLIC,
         ?MimeTypeDetector $mimeTypeDetector = null
     ) {
         $this->adapter = new InMemoryFilesystemAdapter(
             $defaultVisibility,
-            $mimeTypeDetector ?? new FinfoMimeTypeDetector,
+            $mimeTypeDetector ?? new FinfoMimeTypeDetector(),
         );
+        $this->defaultVisibility = $defaultVisibility;
         $this->directories = [];
     }
 
@@ -153,4 +156,3 @@ class TestInMemoryFilesystemAdapter implements FilesystemAdapter
         return '/' . trim($path, '/') . '/';
     }
 }
-
