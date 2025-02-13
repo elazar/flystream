@@ -52,7 +52,7 @@ it('can detect, create, and delete directories', function () {
     $rmResult = rmdir('fly://foo');
     expect($rmResult)->toBeTrue();
     $this->assertFalse(is_dir('fly://foo'));
-})->only();
+});
 
 it('handles opening a nonexistent directory', function () {
     $dir = opendir('fly://foo');
