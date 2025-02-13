@@ -27,6 +27,11 @@
             "Elazar\\Flystream\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Elazar\\Flystream\\Tests\\": "tests/"
+        }
+    },
     "scripts": {
         "cs": "php-cs-fixer fix",
         "test": "XDEBUG_MODE=coverage pest --coverage"
