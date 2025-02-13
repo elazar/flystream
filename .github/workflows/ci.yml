@@ -12,7 +12,7 @@ jobs:
       matrix:
         php: ['8.1', '8.2', '8.3', '8.4'] 
         branch: ['master', '2.x']
-        includes:
+        include:
           - php: '7.4'
             branch: '0.x'
     if: github.ref == format('refs/heads/{0}', matrix.branch)
