@@ -33,8 +33,14 @@
         }
     },
     "scripts": {
-        "cs": "php-cs-fixer fix",
-        "test": "XDEBUG_MODE=coverage pest --coverage"
+        "cs": [
+            "@composer install",
+            "php-cs-fixer fix"
+        ],
+        "test": [
+            "@composer install",
+            "XDEBUG_MODE=coverage pest --coverage"
+        ]
     },
     "config": {
         "sort-packages": true,
