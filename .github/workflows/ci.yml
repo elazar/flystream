@@ -4,17 +4,9 @@ on:
   push: ~
   pull_request: ~
 
-on:
-  workflow_call:
-    inputs:
-      branch:
-        description: Name of git branch
-        required: true
-        type: string
-
 jobs:
-  build-test:
-    name: PHPUnit tests on ${{ matrix.php }}
+  check-branch:
+    name: Check branch
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -23,10 +15,16 @@ jobs:
         include:
           - php: '7.4'
             branch: '0.x'
-    with:
-      build_branch: ${{ github.head_ref || github.ref_name }}
-      matrix_branch: ${{ matrix.branch }}
-    if: inputs.build_branch == inputs.matrix_branch
+    steps:
+      - name: Check branch
+        if: ${{ (github.head_ref || github.ref_name) == matrix.branch }}
+    outputs:
+      php: ${{ matrix.php }}
+
+  build-test:
+    name: PHPUnit tests on ${{ needs.check-branch.php }}
+    runs-on: ubuntu-latest
+    needs: check-branch
     steps:
     - uses: actions/checkout@v2
     - uses: php-actions/composer@v6
