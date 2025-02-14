@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-test:
-    name: Run tests on PHP ${{ matrix.php }}
+    name: Run tests on branch ${{ matrix.branch }}, PHP ${{ matrix.php }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
