@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Check branch
         if: ${{ (github.head_ref || github.ref_name) == matrix.branch }}
+        run: |
+          echo "${{ github.head_ref || github.ref_name }}"
     outputs:
       php: ${{ matrix.php }}
 
