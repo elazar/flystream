@@ -2,10 +2,10 @@
 
 use Elazar\Flystream\FilesystemRegistry;
 use Elazar\Flystream\ServiceLocator;
-use Elazar\Flystream\Tests\TestInMemoryFilesystemAdapter;
 use League\Flysystem\FileAttributes;
 use League\Flysystem\Filesystem;
 use League\Flysystem\PathNormalizer;
+use Elazar\Flystream\Tests\TestInMemoryFilesystemAdapter;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -39,10 +39,14 @@ afterEach(function () {
     $this->registry->unregister('fly');
 });
 
-it('can create and delete directories', function () {
-    $result = mkdir('fly://foo');
-    expect($result)->toBeTrue();
-    rmdir('fly://foo');
+it('can detect, create, and delete directories', function () {
+    $this->assertFalse(is_dir('fly://foo'));
+    $mkResult = mkdir('fly://foo');
+    expect($mkResult)->toBeTrue();
+    $this->assertTrue(is_dir('fly://foo'));
+    $rmResult = rmdir('fly://foo');
+    expect($rmResult)->toBeTrue();
+    $this->assertFalse(is_dir('fly://foo'));
 });
 
 it('can detect a directory', function () {

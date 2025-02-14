@@ -6,6 +6,7 @@ use ArrayIterator;
 use Iterator;
 use IteratorAggregate;
 use League\Flysystem\Config;
+use League\Flysystem\PathNormalizer;
 use League\Flysystem\FilesystemOperator;
 use League\Flysystem\UnableToWriteFile;
 use League\Flysystem\UnixVisibility\VisibilityConverter;
@@ -127,6 +128,11 @@ class StreamWrapper
         $filesystem = $this->getFilesystem($path);
         try {
             $filesystem->deleteDirectory($path);
+
+            // Clear the stat cache to prevent false positives for any
+            // subsequent checks that the directory still exists
+            clearstatcache();
+
             return true;
 
             // @codeCoverageIgnoreStart
@@ -371,6 +377,7 @@ class StreamWrapper
         $this->log('info', __METHOD__, func_get_args());
 
         $filesystem = $this->getFilesystem($path);
+        /** @var VisibilityConverter $visibility */
         $visibility = $this->get(VisibilityConverter::class);
 
         if ($filesystem->fileExists($path)) {
@@ -379,7 +386,7 @@ class StreamWrapper
             );
             $size =  $filesystem->fileSize($path);
             $mtime = $filesystem->lastModified($path);
-        } elseif ($filesystem->directoryExists($path)) {
+        } elseif ($this->directoryExists($path)) {
             $mode = 0040000 | $visibility->forDirectory(
                 $filesystem->visibility($path)
             );
@@ -442,6 +449,29 @@ class StreamWrapper
     private function get(string $key)
     {
         return ServiceLocator::get($key);
+    }
+
+    private function directoryExists($path)
+    {
+        $filesystem = $this->getFilesystem($path);
+
+        if (method_exists($filesystem, 'directoryExists')) {
+            return $filesystem->directoryExists($path);
+        }
+
+        /** @var PathNormalizer $pathNormalizer */
+        $pathNormalizer = $this->get(PathNormalizer::class);
+        $path = $pathNormalizer->normalizePath($path);
+
+        $parentDirectoryPath = dirname($path);
+        $parentDirectoryContents = $filesystem->listContents($parentDirectoryPath);
+
+        foreach ($parentDirectoryContents as $entry) {
+            if ($entry->path() === $path) {
+                return $entry->isDir();
+            }
+        }
+        return false;
     }
 
     private function getDir(string $path): Iterator
