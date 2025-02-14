@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-test:
-    name: Run tests on branch ${{ matrix.branch }}, PHP ${{ matrix.php }}
+    name: Tests (${{ matrix.branch }} - ${{ matrix.php }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -44,3 +44,4 @@ jobs:
       - uses: php-actions/composer@v6
       - name: Run CS-Fixer
         run: vendor/bin/php-cs-fixer check
+
