@@ -1,13 +1,47 @@
 name: CI
 
-on: [push]
+on:
+  push: ~
+  pull_request: ~
 
 jobs:
   build-test:
+    name: Tests (${{ matrix.branch }} - ${{ matrix.php }})
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        php: ['8.1', '8.2', '8.3', '8.4']
+        branch: ['master']
+        include:
+          - php: '7.4'
+            branch: '0.x'
     steps:
+    - name: Check branch
+      id: check-branch
+      if: ${{ env.BUILD_BRANCH == matrix.branch }}
+      run: |
+        echo "Build branch: ${{ env.BUILD_BRANCH }}"
+        echo "Matrix branch: ${{ matrix.branch }}"
+      env:
+        BUILD_BRANCH: ${{ github.base_ref || github.ref_name }}
     - uses: actions/checkout@v2
+      if: ${{ steps.check-branch.outcome == 'success' }}
     - uses: php-actions/composer@v6
-    - uses: NWBY/pest-action@v1.2.0
+      if: ${{ steps.check-branch.outcome == 'success' }}
+      with:
+        php_version: ${{ matrix.php }}
+    - name: Run tests
+      if: ${{ steps.check-branch.outcome == 'success' }}
+      run: |
+        sudo chmod -R 777 vendor/pestphp/pest/.temp
+        vendor/bin/pest
+
+  build-code-style:
+    name: PHP-CS-Fixer checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: php-actions/composer@v6
+      - name: Run CS-Fixer
+        run: vendor/bin/php-cs-fixer check
 
