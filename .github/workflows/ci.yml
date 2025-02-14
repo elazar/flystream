@@ -25,13 +25,13 @@ jobs:
       env:
         BUILD_BRANCH: ${{ github.base_ref || github.ref_name }}
     - uses: actions/checkout@v2
-      if: ${{ steps.check-branch.outcome == "success" }}
+      if: ${{ steps.check-branch.outcome == 'success' }}
     - uses: php-actions/composer@v6
-      if: ${{ steps.check-branch.outcome == "success" }}
+      if: ${{ steps.check-branch.outcome == 'success' }}
       with:
         php_version: ${{ matrix.php }}
     - name: Run tests
-      if: ${{ steps.check-branch.outcome == "success" }}
+      if: ${{ steps.check-branch.outcome == 'success' }}
       run: |
         sudo chmod -R 777 vendor/pestphp/pest/.temp
         vendor/bin/pest
