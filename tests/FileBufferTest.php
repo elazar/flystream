@@ -5,7 +5,7 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 
 beforeEach(function () {
-    $this->buffer = new FileBuffer;
+    $this->buffer = new FileBuffer();
     $this->filesystem = new Filesystem(new InMemoryFilesystemAdapter());
 });
 

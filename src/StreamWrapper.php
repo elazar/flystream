@@ -52,8 +52,8 @@ class StreamWrapper
             return true;
 
             // @codeCoverageIgnoreStart
-        // InMemoryFilesystemAdapter->listContents() returns an empty
-        // array when a directory doesn't exist.
+            // InMemoryFilesystemAdapter->listContents() returns an empty
+            // array when a directory doesn't exist.
         } catch (Throwable $e) {
             $this->log('error', __METHOD__, func_get_args() + [
                 'exception' => $e,
@@ -132,8 +132,8 @@ class StreamWrapper
             return true;
 
             // @codeCoverageIgnoreStart
-        // InMemoryFilesystemAdapter->deleteDirectory() does not raise
-        // an error if the target doesn't exist.
+            // InMemoryFilesystemAdapter->deleteDirectory() does not raise
+            // an error if the target doesn't exist.
         } catch (Throwable $e) {
             $this->log('error', __METHOD__, func_get_args() + [
                 'exception' => $e,
@@ -238,7 +238,7 @@ class StreamWrapper
                 return true;
 
                 // @codeCoverageIgnoreStart
-            // InMemoryFilesystemAdapter->write() does not raise errors
+                // InMemoryFilesystemAdapter->write() does not raise errors
             } catch (Throwable $e) {
                 $this->log('error', __METHOD__, func_get_args() + [
                     'exception' => $e,

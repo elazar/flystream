@@ -22,7 +22,7 @@ function dumpLogs()
 }
 
 beforeEach(function () {
-    $serviceLocator = new ServiceLocator;
+    $serviceLocator = new ServiceLocator();
     ServiceLocator::setInstance($serviceLocator);
     $container = $serviceLocator->getContainer();
 
@@ -33,7 +33,7 @@ beforeEach(function () {
     $this->registry = $container[FilesystemRegistry::class];
 
     $this->filesystem = new Filesystem(
-        new TestInMemoryFilesystemAdapter,
+        new TestInMemoryFilesystemAdapter(),
         [],
         ServiceLocator::get(PathNormalizer::class),
     );

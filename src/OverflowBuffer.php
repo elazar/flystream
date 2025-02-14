@@ -37,7 +37,7 @@ class OverflowBuffer implements BufferInterface
         string $path,
         array $context
     ): void {
-        fseek($this->stream , 0);
+        fseek($this->stream, 0);
 
         $filesystem->writeStream(
             $path,
