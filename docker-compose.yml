@@ -1,0 +1,9 @@
+services:
+
+  php74:
+    build: ./docker/php74
+    working_dir: /app
+    volumes:
+      - ".:/app"
+    command: composer test
+
