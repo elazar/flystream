@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-test:
-    name: PHPUnit tests on ${{ matrix.php }}
+    name: Run tests on PHP ${{ matrix.php }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -18,7 +18,12 @@ jobs:
     steps:
     - name: Check branch
       id: check-branch
-      if: ${{ (github.base_ref || github.ref_name) == matrix.branch }}
+      if: ${{ env.BUILD_BRANCH == matrix.branch }}
+      run: |
+        echo "Build branch: ${{ env.BUILD_BRANCH }}"
+        echo "Matrix branch: ${{ matrix.branch }}"
+      env:
+        BUILD_BRANCH: ${{ github.base_ref || github.ref_name }}
     - uses: actions/checkout@v2
       if: ${{ steps.check-branch.outcome == "success" }}
     - uses: php-actions/composer@v6
