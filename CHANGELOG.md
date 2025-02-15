@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [0.5.0](https://github.com/elazar/flystream/releases/tag/0.5.0)
+
+2025-02-14
+
+* Fixed a bug in `StreamWrapper->url_stat()` where directory checks weren't handled correctly ([#16](https://github.com/elazar/flystream/pull/16)) - thanks @BrianHenryIE
+* Fixed a bug in `StreamWrapper->rmdir()` where stale stat cache entries weren't being cleared ([#16](https://github.com/elazar/flystream/pull/16)) - thanks @BrianHenryIE
+
 ## [0.4.0](https://github.com/elazar/flystream/releases/tag/0.4.0)
 
 2021-02-21
