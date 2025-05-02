@@ -261,11 +261,20 @@ class StreamWrapper
         return true;
     }
 
-    public function stream_read(int $count): string
+    /**
+     * @param int $count
+     *
+     * @return false|string
+     */
+    public function stream_read(int $count)
     {
         $this->log('info', __METHOD__, func_get_args());
-        $this->openRead();
-        return stream_get_contents($this->read, $count);
+        try {
+            $this->openRead();
+            return stream_get_contents($this->read, $count);
+        } catch (Throwable $e) {
+            return false;
+        }
     }
 
     public function stream_seek(int $offset, int $whence = SEEK_SET): bool
@@ -297,8 +306,12 @@ class StreamWrapper
     public function stream_stat()
     {
         $this->log('info', __METHOD__);
-        $this->openRead();
-        return fstat($this->read);
+        try {
+            $this->openRead();
+            return fstat($this->read);
+        } catch (Throwable $e) {
+            return false;
+        }
     }
 
     public function stream_tell(): int

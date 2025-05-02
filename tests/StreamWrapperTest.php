@@ -277,3 +277,10 @@ it('can read and write to a Flysystem filesystem', function () {
 
     expect($actual)->toBe($expected);
 });
+
+it('it returns false for file_get_contents missing file', function () {
+
+    $actual = file_get_contents("fly://doesnotexist.txt");
+
+    expect($actual)->toBe(false);
+});
