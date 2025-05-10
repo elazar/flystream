@@ -119,6 +119,8 @@ it('can handle writes that force a buffer flush', function () {
 });
 
 it('can acquire multiple shared locks', function () {
+    touch('fly://foo');
+
     $stream1 = fopen('fly://foo', 'r');
     $result = flock($stream1, LOCK_SH);
     expect($result)->toBeTrue();
@@ -148,6 +150,8 @@ it('cannot acquire multiple exclusive locks', function () {
 });
 
 it('cannot acquire an exclusive lock with existing locks', function () {
+    touch('fly://foo');
+
     $stream1 = fopen('fly://foo', 'r');
     $result = flock($stream1, LOCK_SH);
     expect($result)->toBeTrue();
@@ -278,9 +282,8 @@ it('can read and write to a Flysystem filesystem', function () {
     expect($actual)->toBe($expected);
 });
 
-it('it returns false for file_get_contents missing file', function () {
-
-    $actual = file_get_contents("fly://doesnotexist.txt");
+it('fails attempting to read a missing file', function () {
+    $actual = @file_get_contents("fly://doesnotexist.txt");
 
     expect($actual)->toBe(false);
 });

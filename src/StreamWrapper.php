@@ -258,6 +258,17 @@ class StreamWrapper
         $this->log('info', __METHOD__, func_get_args());
         $this->path = $path;
         $this->mode = $mode;
+
+        // Attempt to open for reading if mode is read or read/write
+        if (strpbrk($mode, 'r+') !== false) {
+            try {
+                $this->openRead();
+            } catch (\Throwable $e) {
+                $this->log('error', __METHOD__, ['exception' => $e]);
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -273,6 +284,9 @@ class StreamWrapper
             $this->openRead();
             return stream_get_contents($this->read, $count);
         } catch (Throwable $e) {
+            $this->log('error', __METHOD__, func_get_args() + [
+                'exception' => $e,
+            ]);
             return false;
         }
     }
@@ -310,6 +324,9 @@ class StreamWrapper
             $this->openRead();
             return fstat($this->read);
         } catch (Throwable $e) {
+            $this->log('error', __METHOD__, func_get_args() + [
+                'exception' => $e,
+            ]);
             return false;
         }
     }
