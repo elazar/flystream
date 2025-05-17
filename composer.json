@@ -1,6 +1,6 @@
 {
     "name": "elazar/flystream",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "description": "PHP stream wrapper for Flysystem v2 and v3",
     "type": "library",
     "license": "MIT",
