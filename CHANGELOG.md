@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [0.6.0](https://github.com/elazar/flystream/releases/tag/0.6.0)
+
+2025-05-17
+
+* Fixed a bug in `stream_open()`, `stream_read()`, and `stream_stat()` in `StreamWrapper` where missing files were
+n't handled correctly ([#17](https://github.com/elazar/flystream/pull/17)) - thanks @BrianHenryIE
+
 ## [0.5.0](https://github.com/elazar/flystream/releases/tag/0.5.0)
 
 2025-02-14
