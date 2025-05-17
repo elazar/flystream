@@ -1,6 +1,8 @@
-**.swp
+.composer
 .php-cs-fixer.cache
-.phpunit.cache
+.phpunit.cache/
 .phpunit.result.cache
+**.swp
 composer.lock
-vendor
+test.log
+vendor/

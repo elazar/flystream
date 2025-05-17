@@ -1,0 +1,16 @@
+services:
+  php:
+    command: composer test
+    working_dir: /app
+    build:
+      context: "./container/php${PHP_VERSION:?PHP_VERSION}"
+      dockerfile: Containerfile
+    environment:
+      XDEBUG_MODE: coverage
+      PHP_VERSION: "${PHP_VERSION:?PHP_VERSION}"
+
+    volumes:
+      - .:/app:rw
+      - $PWD/docker/php${PHP_VERSION:?PHP_VERSION}/.composer/cache:/root/.composer/cache:rw
+      - $PWD/docker/php${PHP_VERSION:?PHP_VERSION}/composer.lock:/app/composer.lock:rw
+      - $PWD/docker/php${PHP_VERSION:?PHP_VERSION}/vendor:/app/vendor:rw

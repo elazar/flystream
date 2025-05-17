@@ -185,7 +185,7 @@ use Elazar\Flystream\StripProtocolPathNormalizer;
 ServiceLocator::set(PathNormalizer::class, new StripProtocolPathNormalizer(
 
     // This is the default and results in the removal of all protocols
-    null, 
+    null,
 
     // This normalizer returns the given path unchanged
     new PassThruPathNormalizer
@@ -395,3 +395,26 @@ ServiceLocator::set(BufferInterface::class, $buffer);
 Flystream uses a [singleton](https://en.wikipedia.org/wiki/Singleton_pattern) [service locator](https://en.wikipedia.org/wiki/Service_locator_pattern) rather than a more commonly accepted [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) configuration due to how PHP uses its stream wrapper classes. Specifically, PHP implicitly creates an instance of the stream wrapper class each time you use the associated custom protocol, and doesn't allow for dependency injection.
 
 This requires use of a service locator for the stream wrapper to have access to dependencies, a singleton in particular so that the stream wrapper uses the same container that the end user configures to override default dependency implementations. The stream wrapper class limits its use of the service locator to a single method that fetches a dependency from the container of the singleton instance. It also supports injecting a custom singleton instance, in particular for testing. These measures limit the impact of the disadvantages of using the service locator pattern.
+
+## Development and Testing
+
+### Environment Variables
+
+The following environment variables are required for running tests:
+
+* `PHP_VERSION`: Specifies the PHP version to use for testing
+  * Supported values: 81, 82, 83, 84
+  * Example: `PHP_VERSION=84`
+  * This variable is required for running tests in containers
+
+### Running Tests
+
+Tests can be run using the `run-tests.sh` script.
+
+- Outputs usage instructions when it receives a `-h` or `--help` flag
+- Supports running tests against multiple PHP versions
+- Creates necessary directories and files for testing
+- Automatically detects and uses the appropriate container engine (Podman or Docker)
+- Builds the required PHP container images
+- Executes the test suite
+- Generates test logs in `docker/php{version}/test.log`
