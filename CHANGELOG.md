@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [1.4.0](https://github.com/elazar/flystream/releases/tag/1.4.0)
+
+2025-05-17
+
+* Fixed a bug in `stream_open()`, `stream_read()`, and `stream_stat()` in `StreamWrapper` where missing files weren't handled correctly ([#17](https://github.com/elazar/flystream/pull/17)) - thanks @BrianHenryIE
+
 ## [1.3.0](https://github.com/elazar/flystream/releases/tag/1.3.0)
 
 2025-02-14
@@ -30,6 +36,20 @@
 * **BC Break**: Bumped `psr/log` version from `^1` to `^2.0 || ^3.0`
 * **BC Break**: Removed usage of Pimple and container accessor methods from `ServiceLocator` and replaced it with a custom PSR-11 container ([#6](https://github.com/elazar/flystream/issues/6)) - thanks @mattsah
 * Fixed a bug in `StreamWrapper` preventing empty files from being copied ([#7](https://github.com/elazar/flystream/issues/7), [#8](https://github.com/elazar/flystream/pull/8)) - thanks @mattsah
+
+## [0.6.0](https://github.com/elazar/flystream/releases/tag/0.6.0)
+
+2025-05-17
+
+* Fixed a bug in `stream_open()`, `stream_read()`, and `stream_stat()` in `StreamWrapper` where missing files weren't handled correctly ([#17](https://github.com/elazar/flystream/pull/17)) - thanks @BrianHenryIE
+
+
+## [0.5.0](https://github.com/elazar/flystream/releases/tag/0.5.0)
+
+2025-02-14
+
+* Fixed a bug in `StreamWrapper->url_stat()` where directory checks weren't handled correctly ([#16](https://github.com/elazar/flystream/pull/16)) - thanks @BrianHenryIE
+* Fixed a bug in `StreamWrapper->rmdir()` where stale stat cache entries weren't being cleared ([#16](https://github.com/elazar/flystream/pull/16)) - thanks @BrianHenryIE
 
 ## [0.4.0](https://github.com/elazar/flystream/releases/tag/0.4.0)
 
