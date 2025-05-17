@@ -148,6 +148,8 @@ it('can acquire multiple shared locks', function () {
 });
 
 it('cannot acquire multiple exclusive locks', function () {
+    createFile('fly://foo');
+
     $stream1 = fopen('fly://foo', 'w');
     $result = flock($stream1, LOCK_EX);
     expect($result)->toBeTrue();
@@ -290,6 +292,12 @@ it('can read and write to a Flysystem filesystem', function () {
     $actual = file_get_contents("fly://$path");
 
     expect($actual)->toBe($expected);
+});
+
+it('fails attempting to read a missing file', function () {
+    expect(fn() => file_get_contents("fly://doesnotexist.txt"))
+        ->toTriggerWarning('file_get_contents(fly://doesnotexist.txt): Failed to open stream: "Elazar\\Flystream\\StreamWrapper::stream_open" call failed')
+        ->toBeFalse();
 });
 
 it('can stat a file', function () {

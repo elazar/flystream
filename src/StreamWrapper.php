@@ -262,20 +262,37 @@ class StreamWrapper
         $this->log('info', __METHOD__, func_get_args());
         $this->path = $path;
         $this->mode = $mode;
+
+        // Attempt to open for reading if mode is read or read/write
+        if (strpbrk($mode, 'r+') !== false) {
+            try {
+                $this->openRead();
+            } catch (\Throwable $e) {
+                $this->log('error', __METHOD__, ['exception' => $e]);
+                return false;
+            }
+        }
+
         if (strpbrk($mode, 'waxc') !== false) {
             $this->stream_write('');
             $this->stream_flush();
-        } elseif (strpbrk($mode, 'r') !== false) {
-            $this->openRead();
         }
+
         return true;
     }
 
     public function stream_read(int $count): string
     {
         $this->log('info', __METHOD__, func_get_args());
-        $this->openRead();
-        return stream_get_contents($this->read, $count);
+        try {
+            $this->openRead();
+            return stream_get_contents($this->read, $count);
+        } catch (Throwable $e) {
+            $this->log('error', __METHOD__, func_get_args() + [
+                'exception' => $e,
+            ]);
+            return '';
+        }
     }
 
     public function stream_seek(int $offset, int $whence = SEEK_SET): bool
@@ -307,8 +324,15 @@ class StreamWrapper
     public function stream_stat()
     {
         $this->log('info', __METHOD__);
-        $this->openRead();
-        return fstat($this->read);
+        try {
+            $this->openRead();
+            return fstat($this->read);
+        } catch (Throwable $e) {
+            $this->log('error', __METHOD__, func_get_args() + [
+                'exception' => $e,
+            ]);
+            return false;
+        }
     }
 
     public function stream_tell(): int
