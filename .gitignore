@@ -2,5 +2,8 @@
 .php-cs-fixer.cache
 .phpunit.cache
 .phpunit.result.cache
+container
 composer.lock
 vendor
+# SpecStory explanation file
+.specstory/.what-is-this.md
