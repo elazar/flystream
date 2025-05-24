@@ -4,5 +4,8 @@
 .phpunit.result.cache
 **.swp
 composer.lock
+docker/
 test.log
 vendor/
+# SpecStory explanation file
+.specstory/.what-is-this.md

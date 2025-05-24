@@ -1,6 +1,6 @@
 services:
   php:
-    command: composer test
+    command: composer ${COMPOSER_COMMAND:-test}
     working_dir: /app
     build:
       context: "./container/php${PHP_VERSION:?PHP_VERSION}"
@@ -8,6 +8,7 @@ services:
     environment:
       XDEBUG_MODE: coverage
       PHP_VERSION: "${PHP_VERSION:?PHP_VERSION}"
+      COMPOSER_COMMAND: "${COMPOSER_COMMAND:-test}"
 
     volumes:
       - .:/app:rw

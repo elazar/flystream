@@ -407,14 +407,53 @@ The following environment variables are required for running tests:
   * Example: `PHP_VERSION=84`
   * This variable is required for running tests in containers
 
-### Running Tests
+### Development Tools
 
-Tests can be run using the `run-tests.sh` script.
+Development tasks can be run using the `dev-tools.sh` script, which provides a unified interface for testing, code style checking, and cleanup operations across multiple PHP versions.
 
-- Outputs usage instructions when it receives a `-h` or `--help` flag
-- Supports running tests against multiple PHP versions
-- Creates necessary directories and files for testing
+#### Available Commands
+
+- **test**: Run tests using Pest
+- **cs**: Run code style fixer using PHP-CS-Fixer
+- **cleanup**: Clean up generated files
+
+#### Usage Examples
+
+```bash
+# Run tests for all supported PHP versions
+./dev-tools.sh test
+
+# Run tests for specific PHP versions
+./dev-tools.sh test 81 82
+
+# Run code style fixer for all PHP versions
+./dev-tools.sh cs
+
+# Run code style fixer for PHP 8.4 with container rebuild
+./dev-tools.sh cs -f 84
+
+# Clean up generated files for all PHP versions
+./dev-tools.sh cleanup
+
+# Clean up generated files for specific PHP version
+./dev-tools.sh cleanup 83
+
+# Show help and usage information
+./dev-tools.sh --help
+```
+
+#### Options
+
+- `-h, --help`: Show usage instructions
+- `-f, --force-rebuild`: Force rebuild of containers before operation
+- `-v, --verbose`: Enable verbose output
+
+#### Features
+
 - Automatically detects and uses the appropriate container engine (Podman or Docker)
-- Builds the required PHP container images
-- Executes the test suite
-- Generates test logs in `docker/php{version}/test.log`
+- Supports running operations against multiple PHP versions simultaneously
+- Creates necessary directories and files for testing
+- Builds the required PHP container images as needed
+- Executes test suites and code style checks
+- Generates operation logs in `docker/php{version}/test.log` and `docker/php{version}/cs.log`
+- Handles container environment setup and dependency management
