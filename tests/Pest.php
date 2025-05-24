@@ -7,7 +7,7 @@ expect()->extend('toTriggerWarning', function (string $expectedWarningMessage) {
     $warningTriggered = false;
     $actualWarningMessage = '';
 
-    set_error_handler(function($errno, $errstr) use (&$warningTriggered, &$actualWarningMessage) {
+    set_error_handler(function ($errno, $errstr) use (&$warningTriggered, &$actualWarningMessage) {
         if ($errno === E_WARNING) {
             $warningTriggered = true;
             $actualWarningMessage = $errstr;

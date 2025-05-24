@@ -295,7 +295,7 @@ it('can read and write to a Flysystem filesystem', function () {
 });
 
 it('fails attempting to read a missing file', function () {
-    expect(fn() => file_get_contents("fly://doesnotexist.txt"))
+    expect(fn () => file_get_contents("fly://doesnotexist.txt"))
         ->toTriggerWarning('file_get_contents(fly://doesnotexist.txt): Failed to open stream: "Elazar\\Flystream\\StreamWrapper::stream_open" call failed')
         ->toBeFalse();
 });
